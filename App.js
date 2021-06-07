@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './components/home';
 import UploadScreen from './components/upload';
+import newUploadScreen from './components/newUpload';
 
 
 const HomeStack = createStackNavigator();
@@ -24,6 +25,7 @@ function UploadStackScreen() {
   return (
     <UploadStack.Navigator>
         <UploadStack.Screen name="Upload" component={UploadScreen} />
+        <UploadStack.Screen name="Envoi de défi" component={newUploadScreen} />
     </UploadStack.Navigator>
   );
 }
@@ -46,7 +48,6 @@ export default function App() {
                 iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
               }
 
-              // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
           })}
