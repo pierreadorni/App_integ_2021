@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity} from "react-native";
+import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, Button, TouchableNativeFeedback} from "react-native";
+import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
+import NumberPicker from './numberPicker.js';
 
 const options = {
   title: 'Select Avatar',
@@ -92,16 +94,54 @@ class newUpload extends React.Component{
 
     render(){
         return(
-            <View>
-                <Text> Oui bonjour ceci est un nouvel upload !</Text>
-                {this._displayDefis()}
-                {this._displayImage()}
-                <TouchableOpacity onPress={this._pickImage}>
-                    <Text> Choisir une photo </Text>
+            <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
+                <View style={styles.actionButton}>
+                    <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
+                </View>
+                <View style={styles.actionButton}>
+                    <Button onPress={this._pickDefi} title='Choisir un défi' color='#000000' ></Button>
+                </View>
+                <NumberPicker></NumberPicker>
+
+
+                <TouchableOpacity style={styles.uploadButton} onPress={()=>{}}>
+                    <View></View>
+                    <IconButton style={styles.uploadIcon} icon='cloud' color={Colors.white} size={45} />
+                    <Text style={{fontSize: 25,fontWeight:'bold', color:Colors.white, marginLeft:-15,marginTop:-5}}> Upload </Text>
                 </TouchableOpacity>
-            </View>
+
+        </View>
+
         )
     }
 }
+
+const styles = StyleSheet.create({
+    number: {
+        fontSize: 200,
+        textAlign:'center',
+        marginTop: '30%'
+
+    },
+    actionButton: {
+        marginLeft: '25%',
+        marginRight: '25%',
+        marginTop:20,
+        borderWidth: 1,
+        borderRadius: 5,
+    },
+    uploadButton:{
+      flex:1,
+      alignItems: "center",
+      position: 'absolute',
+      bottom: 20,
+      flexDirection:'row',
+      backgroundColor: Colors.green500,
+      height: 50,
+      borderRadius: 100,
+      paddingRight: 20,
+  },
+
+})
 
 export default newUpload;
