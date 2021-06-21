@@ -1,9 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, Button, TouchableNativeFeedback, Modal, TouchableHighlight} from "react-native";
+import {StyleSheet, View, Text, TouchableOpacity, Button, Modal, TouchableHighlight, FlatList} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import NumberPicker from './numberPicker.js';
+import Defi from './defi.js';
 
 const options = {
   title: 'Select Avatar',
@@ -20,7 +21,28 @@ class newUpload extends React.Component{
         this.state = {
             defis : undefined,
             image : undefined,
-            modalVisible: false
+            modalVisible: false,
+            defisListe: [
+                'Porter une couche pendant une journée',
+                'Faire la livraison du Pic',
+                'Se prendre en photo avec le plus de chiens dans la rue',
+                'Offrir un bouquet de fleurs à des inconnus',
+                'Organiser un spectacle de marionette au parc Songeons',
+                'Monter les 6 étages de BF en montant 3 marches puis en descendant 1',
+                'Organiser un faux mariage sur la place de la mairie (1 par clan)',
+                'Faire un faux combat de pokémon (un nouvö joue le rôle du pokémon)',
+                "Organiser une course d'escargots",
+                'se balader aver un panneau "free hug" dans compiègne',
+                'proposer aux compiègnois de laver leur voiture',
+                "Demander des conseils pour une tetine dans une pharmacie et faire croire que c'est pour soi-même",
+                'Faire un remix de Roméo et Juilette dans le marché aux herbes',
+                "Chanter l'hymne national de l'Azerbaïdjan sur la place de la mairie",
+                'Faire un poème sur les mollets de la présidente et lui offir',
+                'Offrir une tranche de melon à la vice-prez',
+                'Aller à deux dans une bijouterie et faire une demande de fiancailles',
+                'Colorer/décolorer ses cheveux en la couleur de son clan',
+            ],
+            defiChoisi: undefined
         }
     }
 
@@ -110,26 +132,41 @@ class newUpload extends React.Component{
                     }}>
                     <View style={styles.centeredView}>
                       <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Hello World!</Text>
-
-                        <TouchableHighlight
-                          style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
-                          onPress={() => {
-                            setModalVisible(!modalVisible);
-                          }}>
-                          <Text style={styles.textStyle}>Hide Modal</Text>
-                        </TouchableHighlight>
+                        <IconButton 
+                            style={styles.closeButton} 
+                            icon='close' 
+                            color={Colors.red700} 
+                            size={20} 
+                            onPress={() => {
+                                this._setModalVisible(!this.state.modalVisible);
+                              }}
+                        />
+                        <FlatList
+                            style={{width: '120%'}}
+                            data={this.state.defisListe}
+                            keyExtractor={(item) => item}
+                            renderItem={({item}) => <Defi desc={item} func={
+                                () => {
+                                    this.setState({
+                                        defiChoisi: item
+                                    })
+                                    this._setModalVisible(!this.state.modalVisible);
+                                  }
+                            }/>}
+                        />
                       </View>
                     </View>
-                  </Modal>
+                </Modal>
 
                 <View style={styles.actionButton}>
                     <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
                 </View>
                 <View style={styles.actionButton}>
-                    <Button onPress={this._setModalVisible} title='Choisir un défi' color='#000000' ></Button>
+                    <Button onPress={()=>{this._setModalVisible(true)}} title='Choisir un défi' color='#000000' ></Button>
                 </View>
                 <NumberPicker></NumberPicker>
+
+                <Text> {JSON.stringify(this.state.defiChoisi)}</Text>
 
                 <TouchableOpacity style={styles.uploadButton} onPress={()=>{}}>
                     <View></View>
@@ -168,6 +205,46 @@ const styles = StyleSheet.create({
       borderRadius: 100,
       paddingRight: 20,
   },
+
+  // === MODAL ===
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    flex: 1,
+    width: '80%',
+    height:'100%',
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  closeButton:{
+      position:'absolute',
+      top:0,
+      left:0
+  }
 
 })
 
