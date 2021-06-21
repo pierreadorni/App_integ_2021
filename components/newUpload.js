@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, Button, TouchableNativeFeedback} from "react-native";
+import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, TouchableOpacity, Button, TouchableNativeFeedback, Modal, TouchableHighlight} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -19,9 +19,11 @@ class newUpload extends React.Component{
         super(props);
         this.state = {
             defis : undefined,
-            image : undefined
+            image : undefined,
+            modalVisible: false
         }
     }
+
     /*
     useEffect(() => {
         (async () => {
@@ -34,6 +36,12 @@ class newUpload extends React.Component{
         })();
       }, []);
      */
+
+    _setModalVisible(v){
+        this.setState({
+            modalVisible: v
+        })
+    }
 
     _saveDefis(obj){
         FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(obj));
@@ -94,15 +102,39 @@ class newUpload extends React.Component{
 
     render(){
         return(
+
+
+
             <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                      Alert.alert('Modal has been closed.');
+                    }}>
+                    <View style={styles.centeredView}>
+                      <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello World!</Text>
+
+                        <TouchableHighlight
+                          style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                          onPress={() => {
+                            setModalVisible(!modalVisible);
+                          }}>
+                          <Text style={styles.textStyle}>Hide Modal</Text>
+                        </TouchableHighlight>
+                      </View>
+                    </View>
+                  </Modal>
+
                 <View style={styles.actionButton}>
                     <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
                 </View>
                 <View style={styles.actionButton}>
-                    <Button onPress={this._pickDefi} title='Choisir un défi' color='#000000' ></Button>
+                    <Button onPress={this._setModalVisible} title='Choisir un défi' color='#000000' ></Button>
                 </View>
                 <NumberPicker></NumberPicker>
-
 
                 <TouchableOpacity style={styles.uploadButton} onPress={()=>{}}>
                     <View></View>
