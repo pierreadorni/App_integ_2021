@@ -98,13 +98,8 @@ class newUpload extends React.Component{
         this._readDefis();
     }
 
-
-
     render(){
         return(
-
-
-
             <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
                 <Modal
                     animationType="slide"
