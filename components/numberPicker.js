@@ -7,19 +7,24 @@ class NumberPicker extends React.Component{
         super(props);
         this.state = {
             number : 1,
-
         }
     }
+
+    //componentDidUpdate(){
+    //    this.props.update(this.state.number);
+    //}
 
     _add(n){
         if (n+this.state.number > 0){
             this.setState({
                 number: this.state.number + n
-            })
+            },()=>{this.props.update(this.state.number)})
+            
         }else{
             this.setState({
                 number: 1
-            })
+            },()=>{this.props.update(this.state.number)})
+            
         }
     }
 
@@ -27,7 +32,7 @@ class NumberPicker extends React.Component{
         return(
             <View style={styles.container}>
                 <View style={styles.circle}>
-                    <TouchableNativeFeedback onPress={()=>{this._add(-5)}}>
+                    <TouchableNativeFeedback onPress={()=>{this._add(-5);}}>
                         <View >
                             <Text style={[styles.big , styles.red,styles.centered]} >
                                 -5
@@ -36,7 +41,7 @@ class NumberPicker extends React.Component{
                     </TouchableNativeFeedback>
                 </View>
                 <View style={styles.circle}>
-                    <TouchableNativeFeedback onPress={()=>{this._add(-1)}}>
+                    <TouchableNativeFeedback onPress={()=>{this._add(-1);}}>
                         <View >
                             <Text style={[styles.big , styles.red,styles.centered]} >
                                 -1
@@ -47,7 +52,7 @@ class NumberPicker extends React.Component{
 
                 <Text style={[styles.big,styles.centered,styles.circle_ios]}>{this.state.number}</Text>
                 <View style={styles.circle}>
-                    <TouchableNativeFeedback onPress={()=>{this._add(1)}}>
+                    <TouchableNativeFeedback onPress={()=>{this._add(1);}}>
                         <View >
                             <Text style={[styles.big , styles.green,styles.centered]} >
                                 +1
@@ -56,7 +61,7 @@ class NumberPicker extends React.Component{
                     </TouchableNativeFeedback>
                 </View>
                 <View style={styles.circle}>
-                    <TouchableNativeFeedback onPress={()=>{this._add(5)}}>
+                    <TouchableNativeFeedback onPress={()=>{this._add(5);}}>
                         <View >
                             <Text style={[styles.big , styles.green, styles.centered]} >
                                 +5
@@ -65,10 +70,8 @@ class NumberPicker extends React.Component{
                     </TouchableNativeFeedback>
                 </View>
             </View>
-
         )
     }
-
 }
 
 const styles = StyleSheet.create({

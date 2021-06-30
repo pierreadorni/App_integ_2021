@@ -10,8 +10,6 @@ class Defi extends React.Component {
                 </TouchableOpacity>
                 <View style={styles.separator}></View>
             </View>
-
-
         )
     }
 }

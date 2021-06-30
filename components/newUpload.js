@@ -5,6 +5,8 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import NumberPicker from './numberPicker.js';
 import Defi from './defi.js';
+import ChoixClan from './choixClan.js'
+
 
 const options = {
   title: 'Select Avatar',
@@ -21,6 +23,7 @@ class newUpload extends React.Component{
         this.state = {
             defis : undefined,
             image : undefined,
+            clan: 'kb',
             modalVisible: false,
             defisListe: [
                 'Porter une couche pendant une journée',
@@ -42,7 +45,8 @@ class newUpload extends React.Component{
                 'Aller à deux dans une bijouterie et faire une demande de fiancailles',
                 'Colorer/décolorer ses cheveux en la couleur de son clan',
             ],
-            defiChoisi: undefined
+            defiChoisi: undefined,
+            number: 1,
         }
     }
 
@@ -82,30 +86,10 @@ class newUpload extends React.Component{
         })
     }
 
-    _displayDefis(){
-        if(this.state.defis != undefined){
-            return(
-                <Text>
-                    défis: {JSON.stringify(this.state.defis)}
-                </Text>
-            )
-        }
-    }
-    _displayImage(){
-        if (this.state.image != undefined){
-            return(
-                <Text>
-                    Image: {JSON.stringify(this.state.image)}
-                </Text>
-            )
-        }
-    }
-
     _pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          mediaTypes: ImagePicker.MediaTypeOptions.Videos,
           allowsEditing: true,
-          //aspect: [4, 3],
           quality: 1,
         });
 
@@ -114,7 +98,39 @@ class newUpload extends React.Component{
                 image : result
             })
         }
-      };
+    };
+    _setClan(c){
+        this.setState({
+            clan:c
+        })
+    }
+    _updateNumber(n){
+        this.setState({
+            number:n
+        })
+    }
+
+    _submit(){
+      if(this.state.defiChoisi != undefined && this.state.image != undefined){
+        let defis = this.state.defis;
+        if (defis == undefined){
+          defis = [];
+        }
+
+        defis.push({
+          'video':this.state.image.uri,
+          'defi':this.state.defiChoisi,
+          'nb': this.state.nb,
+          'clan': this.state.clan,
+          'id': Math.round(Math.random()*1000000)
+        });
+
+        this._saveDefis(defis);
+        this.props.navigation.navigate("Upload");
+      }else{
+        console.log('il manque le défi ou la vidéo')
+      }
+    }
 
     componentDidMount(){
         this._readDefis();
@@ -123,6 +139,8 @@ class newUpload extends React.Component{
     render(){
         return(
             <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
+                
+                {/* MODAL DE CHOIX DE DEFI*/}
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -158,17 +176,29 @@ class newUpload extends React.Component{
                     </View>
                 </Modal>
 
+                {/* BOUTON DE CHOIX DE VIDEO*/}
                 <View style={styles.actionButton}>
                     <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
                 </View>
+
+                {/* BOUTON DE CHOIX DE DEFI*/}
                 <View style={styles.actionButton}>
                     <Button onPress={()=>{this._setModalVisible(true)}} title='Choisir un défi' color='#000000' ></Button>
                 </View>
-                <NumberPicker></NumberPicker>
 
-                <Text> {JSON.stringify(this.state.defiChoisi)}</Text>
+                {/* CHOIX DE NOMBRE DE NOUVO */}
+                <NumberPicker update={(n)=>{this._updateNumber(n)}}></NumberPicker>
+                
+                {/* CHOIX DU CLAN */}
+                <ChoixClan selected={this.state.clan} kb={()=>{this._setClan('kb')}} vb={()=>{this._setClan('vb')}} tampi={()=>{this._setClan('tampi')}} youa={()=>{this._setClan('youa')}}></ChoixClan>
 
-                <TouchableOpacity style={styles.uploadButton} onPress={()=>{}}>
+                {/* AFFICHAGE DEBUG */}
+                <Text numberOfLines={1}> Vidéo : {this.state.image != undefined ? this.state.image['uri'] : ""} </Text>
+                <Text> Défi : {JSON.stringify(this.state.defiChoisi)} </Text>
+                <Text> Nombre de nouvös: {this.state.number}</Text>
+
+                {/* VALIDATION DU FORMULAIRE */}
+                <TouchableOpacity style={styles.uploadButton} onPress={()=>{this._submit()}}>
                     <View></View>
                     <IconButton style={styles.uploadIcon} icon='cloud' color={Colors.white} size={45} />
                     <Text style={{fontSize: 25,fontWeight:'bold', color:Colors.white, marginLeft:-15,marginTop:-5}}> Upload </Text>
