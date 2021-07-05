@@ -42,7 +42,6 @@ const clans={
 class ChoixClan extends React.Component{
 
     _renderClan(c){
-        console.log(clans[c][0])
         return(
             <Image style={clans[c][2]} source={clans[c][(this.props.selected == c)?0:1]}/>
         )

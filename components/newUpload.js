@@ -1,12 +1,12 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Button, Modal, TouchableHighlight, FlatList} from "react-native";
+import {StyleSheet, View, Text, TouchableOpacity, Button, Modal, ActivityIndicator, FlatList, TouchableWithoutFeedbackBase} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import NumberPicker from './numberPicker.js';
 import Defi from './defi.js';
 import ChoixClan from './choixClan.js'
-
+import ProgressBar from './progressBar.js';
 
 const options = {
   title: 'Select Avatar',
@@ -15,6 +15,8 @@ const options = {
     path: 'images',
   },
 };
+
+
 
 class newUpload extends React.Component{
 
@@ -47,7 +49,10 @@ class newUpload extends React.Component{
             ],
             defiChoisi: undefined,
             number: 1,
-        }
+            loading: false,
+            uploading: false,
+            uploadingProgress: 0
+        };
     }
 
     /*
@@ -70,10 +75,12 @@ class newUpload extends React.Component{
     }
 
     _saveDefis(obj){
-        FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(obj));
-        this.setState({
+        FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(obj)).then(()=>{
+          this.setState({
             defis: obj
             })
+        });
+
     }
     _readDefis(){
         FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((res)=>{
@@ -86,12 +93,51 @@ class newUpload extends React.Component{
         })
     }
 
+    _sendImage(f){
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+
+      formData.append('file',{
+        uri: this.state.image.uri,
+        type: 'video/mp4',
+        name: 'video.mp4'
+      })
+
+      xhr.upload.addEventListener('progress',(event)=>{
+        this.setState({
+          uploadingProgress: event.loaded/event.total
+        })
+      });
+      xhr.addEventListener('load',()=>{
+        console.log('response: ');
+        console.log(xhr.response);
+        this.setState({
+          uploading: false
+        })
+        f();
+      })
+      xhr.open('POST','https://assos.utc.fr/integ/integ2021/api/upload-video.php');
+      xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+      this.setState({
+        loading: false,
+        uploading: true
+      })
+      xhr.send(formData);
+    }
+
     _pickImage = async () => {
+        
+        this.setState({
+          loading: true
+        })
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Videos,
           allowsEditing: true,
           quality: 1,
         });
+        this.setState({
+          loading: false
+        })
 
         if (!result.cancelled) {
             this.setState({
@@ -105,6 +151,7 @@ class newUpload extends React.Component{
         })
     }
     _updateNumber(n){
+        
         this.setState({
             number:n
         })
@@ -112,28 +159,50 @@ class newUpload extends React.Component{
 
     _submit(){
       if(this.state.defiChoisi != undefined && this.state.image != undefined){
+        this.setState({loading: true});
         let defis = this.state.defis;
         if (defis == undefined){
           defis = [];
         }
-
         defis.push({
           'video':this.state.image.uri,
           'defi':this.state.defiChoisi,
-          'nb': this.state.nb,
+          'nb': this.state.number,
           'clan': this.state.clan,
-          'id': Math.round(Math.random()*1000000)
+          'id': Math.round(Math.random()*1000000),
+          'status':1
         });
 
         this._saveDefis(defis);
-        this.props.navigation.navigate("Upload");
+        this._sendImage(()=>{this.props.navigation.navigare('Upload',{updateList:true});});
+        
       }else{
         console.log('il manque le défi ou la vidéo')
       }
     }
 
+    _displayLoading(){
+      if(this.state.loading){
+        return(
+          <View style={styles.loadingScreen}>
+            <ActivityIndicator size="large" color="#EB62BC" />
+          </View>
+        )
+      }
+    }
+
+    _displayUploading(){
+      if (this.state.uploading){
+        return(
+          <View style={styles.loadingScreen}>
+            <ProgressBar progress={this.state.uploadingProgress}/>
+          </View>
+        )
+      }
+    }
+
     componentDidMount(){
-        this._readDefis();
+      this._readDefis();
     }
 
     render(){
@@ -141,6 +210,8 @@ class newUpload extends React.Component{
             <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
                 
                 {/* MODAL DE CHOIX DE DEFI*/}
+                {this._displayLoading()}
+                {this._displayUploading()}
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -195,7 +266,8 @@ class newUpload extends React.Component{
                 {/* AFFICHAGE DEBUG */}
                 <Text numberOfLines={1}> Vidéo : {this.state.image != undefined ? this.state.image['uri'] : ""} </Text>
                 <Text> Défi : {JSON.stringify(this.state.defiChoisi)} </Text>
-                <Text> Nombre de nouvös: {this.state.number}</Text>
+                <Text> Nombre de nouvös: {this.state.number.toString()}</Text>
+                
 
                 {/* VALIDATION DU FORMULAIRE */}
                 <TouchableOpacity style={styles.uploadButton} onPress={()=>{this._submit()}}>
@@ -274,6 +346,15 @@ const styles = StyleSheet.create({
       position:'absolute',
       top:0,
       left:0
+  },
+  loadingScreen:{
+    position:'absolute',
+    width:'100%',
+    height:'100%',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    zIndex: 1,
+    alignItems:'center',
+    justifyContent:'center'
   }
 
 })
