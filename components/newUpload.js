@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Button, Modal, ActivityIndicator, FlatList, TouchableWithoutFeedbackBase} from "react-native";
+import {StyleSheet, View, Text, TouchableOpacity, Button, Modal, ActivityIndicator, FlatList, DeviceEventEmitter} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,6 +7,7 @@ import NumberPicker from './numberPicker.js';
 import Defi from './defi.js';
 import ChoixClan from './choixClan.js'
 import ProgressBar from './progressBar.js';
+import Toast from 'react-native-simple-toast';
 
 const options = {
   title: 'Select Avatar',
@@ -16,16 +17,15 @@ const options = {
   },
 };
 
-
-
 class newUpload extends React.Component{
 
     constructor(props){
         super(props);
         this.state = {
-            defis : undefined,
+            defi : undefined,
             image : undefined,
             clan: 'kb',
+            id: undefined,
             modalVisible: false,
             defisListe: [
                 'Porter une couche pendant une journée',
@@ -74,55 +74,76 @@ class newUpload extends React.Component{
         })
     }
 
-    _saveDefis(obj){
-        FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(obj)).then(()=>{
-          this.setState({
-            defis: obj
-            })
-        });
+
+
+    async _saveDefi(defi){
+        
+        let defisStr = await this._readDefis();
+        let defis = JSON.parse(defisStr);
+        let found = 0;
+  
+        for(let i=0;i<defis.length;i++){
+          if (defis[i].id == defi.id){
+            found = 1;
+            defis[i] = defi;
+          }
+        }
+
+        if (!found){
+          defis.push(defi);
+        }
+
+        await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
+        DeviceEventEmitter.emit("event.DefisChanged", {});
 
     }
-    _readDefis(){
-        FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((res)=>{
-            if (res['exists'] == false){return 0;}
-            FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((content)=>{
-                this.setState({
-                    defis: JSON.parse(content)
-                    })
-            })
-        })
+
+    async _readDefis(){
+        let res = await FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json');
+        if (res['exists'] == false){return 0;}
+        let content = await FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json');
+        return content
     }
 
-    _sendImage(f){
+    _sendImage(){
+
       const xhr = new XMLHttpRequest();
       const formData = new FormData();
 
       formData.append('file',{
         uri: this.state.image.uri,
         type: 'video/mp4',
-        name: 'video.mp4'
-      })
+        name: 'video.mp4',
+        data: this.state.defi,
+      });
+
+      formData.append('data',JSON.stringify(this.state.defi));
 
       xhr.upload.addEventListener('progress',(event)=>{
-        this.setState({
-          uploadingProgress: event.loaded/event.total
-        })
+
+        let defi = JSON.parse(JSON.stringify(this.state.defi));
+        defi.uploadProgress = Math.round(event.loaded/event.total*100);
+        this._saveDefi(defi)
       });
+
       xhr.addEventListener('load',()=>{
         console.log('response: ');
         console.log(xhr.response);
-        this.setState({
-          uploading: false
-        })
-        f();
+        
+        let defi = JSON.parse(JSON.stringify(this.state.defi));
+        defi.status = 1;
+        defi.id = parseInt(JSON.parse(xhr.response).data);
+        this._saveDefi(defi);
       })
+
       xhr.open('POST','https://assos.utc.fr/integ/integ2021/api/upload-video.php');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       this.setState({
         loading: false,
-        uploading: true
       })
       xhr.send(formData);
+
+      
     }
 
     _pickImage = async () => {
@@ -157,27 +178,33 @@ class newUpload extends React.Component{
         })
     }
 
+
     _submit(){
       if(this.state.defiChoisi != undefined && this.state.image != undefined){
-        this.setState({loading: true});
-        let defis = this.state.defis;
-        if (defis == undefined){
-          defis = [];
-        }
-        defis.push({
-          'video':this.state.image.uri,
-          'defi':this.state.defiChoisi,
-          'nb': this.state.number,
-          'clan': this.state.clan,
-          'id': Math.round(Math.random()*1000000),
-          'status':1
+
+        this.setState({
+          loading: true,
+          defi :{
+            video : this.state.image.uri,
+            defi : this.state.defiChoisi,
+            nb :  this.state.number,
+            clan : this.state.clan,
+            id : Math.round(Math.random()*100000),
+            status : 3, // 0 = refusé, 1 = en attente, 2 = accepté, 3 = en cours d'ulpoad 
+            uploadProgress : 0
+          }
+        },()=>{
+          this._sendImage(()=>{});
+          this._saveDefi(this.state.defi);
         });
 
-        this._saveDefis(defis);
-        this._sendImage(()=>{this.props.navigation.navigare('Upload',{updateList:true});});
+        
+        
+        this.props.navigation.navigate('Upload',{updateList:true});
+
         
       }else{
-        console.log('il manque le défi ou la vidéo')
+        Toast.show('Il manque le défi ou la vidéo.', Toast.SHORT);
       }
     }
 
@@ -201,17 +228,33 @@ class newUpload extends React.Component{
       }
     }
 
+    _displayDebug(){
+      if(this.state.defiChoisi != undefined){
+        return(this.state.defiChoisi.id);
+      }
+    }
+
     componentDidMount(){
-      this._readDefis();
+      fetch('http://assos.utc.fr/integ/integ2021/api/get_defis.php')
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ defisListe: data });
+
+        });
+    }
+
+    componentWillUnmount(){
+      DeviceEventEmitter.removeAllListeners("event.mapMarkerSelected")
     }
 
     render(){
         return(
             <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
                 
-                {/* MODAL DE CHOIX DE DEFI*/}
+                
                 {this._displayLoading()}
                 {this._displayUploading()}
+                {/* MODAL DE CHOIX DE DEFI*/}
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -233,8 +276,8 @@ class newUpload extends React.Component{
                         <FlatList
                             style={{width: '120%'}}
                             data={this.state.defisListe}
-                            keyExtractor={(item) => item}
-                            renderItem={({item}) => <Defi desc={item} func={
+                            keyExtractor={(item) => item.id}
+                            renderItem={({item}) => <Defi desc={item.description} func={
                                 () => {
                                     this.setState({
                                         defiChoisi: item
@@ -264,9 +307,7 @@ class newUpload extends React.Component{
                 <ChoixClan selected={this.state.clan} kb={()=>{this._setClan('kb')}} vb={()=>{this._setClan('vb')}} tampi={()=>{this._setClan('tampi')}} youa={()=>{this._setClan('youa')}}></ChoixClan>
 
                 {/* AFFICHAGE DEBUG */}
-                <Text numberOfLines={1}> Vidéo : {this.state.image != undefined ? this.state.image['uri'] : ""} </Text>
-                <Text> Défi : {JSON.stringify(this.state.defiChoisi)} </Text>
-                <Text> Nombre de nouvös: {this.state.number.toString()}</Text>
+                <Text>{/*this._displayDebug()*/}</Text>
                 
 
                 {/* VALIDATION DU FORMULAIRE */}

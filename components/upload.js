@@ -1,15 +1,17 @@
 import React from "react";
-import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, FlatList} from "react-native";
+import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import ItemDefi from "./itemDefi";
+
 
 class Home extends React.Component{
 
     constructor(props) {
         super(props);
         this.state={
-          defis: []
+          defis: [],
+          lastDefis:[]
         }
     }
 
@@ -18,14 +20,17 @@ class Home extends React.Component{
     }
 
     _readDefis(){
-      console.log('reading defis');
+
       FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((res)=>{
           if (res['exists'] == false){return 0;}
           FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((content)=>{  
-                this.setState({
-                  defis: JSON.parse(content)
-                  })
-              
+
+            if (content !== JSON.stringify(this.state.defis) && this._ismounted){
+              this.setState({
+                lastDefis: this.state.defis,
+                defis: JSON.parse(content)
+              })
+            } 
           })
       })
     }
@@ -34,9 +39,14 @@ class Home extends React.Component{
     }
     
     componentDidMount(){
-      this.props.navigation.setParams({ updateList: ()=>{this._readDefis()} });
-      this._readDefis();
+      DeviceEventEmitter.addListener("event.DefisChanged", () => this._readDefis());
+      
+      this._readDefis();  
+      this._ismounted = true;
       this._deleteAllDefis();
+    }
+    componentWillUnmount(){
+      this._ismounted = false;
     }
 
     componentDidUpdate(prevProps){
@@ -44,12 +54,13 @@ class Home extends React.Component{
     }
 
     render(){
+      //(JSON.stringify(this.state.defis));
         return (
           <View style={styles.container}>
             <FlatList
                 style={{width: '100%'}}
                 data={this.state.defis}
-                keyExtractor={(item) => item['id']}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({item}) => <ItemDefi defi={item}/>}
             />
             <View style={styles.centeredContainer}>

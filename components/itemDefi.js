@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, DeviceEventEmitter} from 'react-native';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Fontisto } from '@expo/vector-icons';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 class ItemDefi extends React.Component{
     constructor(props){
@@ -39,6 +40,34 @@ class ItemDefi extends React.Component{
         }
         
     }
+
+    _displayProgress(){
+        return(
+            <View>
+                <AnimatedCircularProgress
+                size={50}
+                width={5}
+                fill={this.props.defi.uploadProgress}
+                tintColor="#00e0ff"
+                onAnimationComplete={() => console.log('onAnimationComplete')}
+                backgroundColor="#3d5875" 
+                tintColor="#EB62BC"
+                />
+                <Text style={styles.progressText}> {this.props.defi.uploadProgress}% </Text>
+            </View>
+            
+        )
+    }
+
+    _displayRight(){
+        
+        if(this.props.defi['status'] == 3){
+            return(this._displayProgress())
+        }else{
+            return(this._displayStatusIcon())
+        }
+    }
+
     _displayStatusIcon(){
         let name = "hourglass";
         let color = "blue";
@@ -58,6 +87,7 @@ class ItemDefi extends React.Component{
 
     componentDidMount() {
         this.generateThumbnail(this.props.defi['video']);
+        //DeviceEventEmitter.addListener("event.DefisChanged", () => this._readDefis());
     }
 
     render() {
@@ -67,15 +97,14 @@ class ItemDefi extends React.Component{
                     {this._displayThumbnail()}
                 </View>
                 <View style={styles.infosBox}>
-                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.infosDefi}>{this.props.defi['defi']}</Text>
+                    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.infosDefi}>{this.props.defi['defi'].description}</Text>
                     <View style={styles.numberContainer}>
                         <Text style={styles.infosNumber}>{this.props.defi['nb'].toString()}</Text>
                         <Text>Nouvös</Text>
                     </View>
                 </View>
                 <View style={styles.statusBox}>
-                    {this._displayStatusIcon()}
-                    
+                    {this._displayRight()}
                 </View>
             </View>
         )
@@ -131,6 +160,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    progressText:{
+        textAlign: 'center',
+        position: 'relative',
+        top: -35
+    }
 })
 
 export default ItemDefi
