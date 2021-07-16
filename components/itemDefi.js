@@ -49,7 +49,7 @@ class ItemDefi extends React.Component{
                 width={5}
                 fill={this.props.defi.uploadProgress}
                 tintColor="#00e0ff"
-                onAnimationComplete={() => console.log('onAnimationComplete')}
+                
                 backgroundColor="#3d5875" 
                 tintColor="#EB62BC"
                 />
@@ -64,7 +64,7 @@ class ItemDefi extends React.Component{
         if(this.props.defi['status'] == 3){
             return(this._displayProgress())
         }else{
-            return(this._displayStatusIcon())
+            return(this._displayStatus())
         }
     }
 
@@ -85,6 +85,45 @@ class ItemDefi extends React.Component{
         )
     }
 
+    _displayStatus(){
+        if (this.props.defi.status == 2){
+            return(
+                <View style={{
+                    borderWidth: 1,
+                    borderColor: "#EA8BDE",
+                    borderRadius: 10,
+                    backgroundColor: "#EA8BDE"
+
+                }}>
+                    <Text style={{color:"#ffffff", marginBottom: 2}}> Accepté </Text>
+                </View>
+            )
+        }else if (this.props.defi.status == 1){
+            return(
+                <View style={{
+                    borderWidth: 1,
+                    borderColor: "#EA8BDE",
+                    borderRadius: 10
+
+                }}>
+                    <Text style={{color:"#EA8BDE", marginBottom: 2}}> En attente </Text>
+                </View>
+            )
+        }else if (this.props.defi.status == 0){
+            return(
+                <View style={{
+                    borderWidth: 1,
+                    borderColor: "#ff0000",
+                    borderRadius: 10
+
+                }}>
+                    <Text style={{color:"#ff0000", marginBottom: 2}}> Refusé </Text>
+                </View>
+            )
+        }
+
+    }
+
     componentDidMount() {
         this.generateThumbnail(this.props.defi['video']);
         //DeviceEventEmitter.addListener("event.DefisChanged", () => this._readDefis());
@@ -99,8 +138,8 @@ class ItemDefi extends React.Component{
                 <View style={styles.infosBox}>
                     <Text numberOfLines={1} ellipsizeMode='tail' style={styles.infosDefi}>{this.props.defi['defi'].description}</Text>
                     <View style={styles.numberContainer}>
-                        <Text style={styles.infosNumber}>{this.props.defi['nb'].toString()}</Text>
-                        <Text>Nouvös</Text>
+                        <Text style={styles.infosNumber}>{"×"+this.props.defi['nb'].toString()}</Text>
+                        
                     </View>
                 </View>
                 <View style={styles.statusBox}>
@@ -113,7 +152,7 @@ class ItemDefi extends React.Component{
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: 'rgba(255,255,255,0.7)',
+        backgroundColor: 'rgba(255,255,255,0.0589)',
         height: 100,
         flexDirection: 'row',
         borderColor: 'rgba(0,0,0,0.5)',
@@ -122,7 +161,8 @@ const styles = StyleSheet.create({
         marginTop:10,
         marginLeft:10,
         marginRight:10,
-        padding: 10
+        padding: 10,
+        color:"white"
 
     },
     thumbnailBox:{
@@ -137,16 +177,18 @@ const styles = StyleSheet.create({
     },
     infosBox: {
         flex: 2,
-        paddingTop: 5,
+        marginTop: -3
     },
     infosDefi:{
         fontWeight: 'bold',
+        color:"white"
     },
     infosNumber:{
         fontSize: 40,
         position: 'relative',
         top: -4,
-        marginBottom: -10
+        marginBottom: -10,
+        color:"white"
 
     },
     numberContainer:{

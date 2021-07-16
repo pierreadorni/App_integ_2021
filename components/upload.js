@@ -11,12 +11,19 @@ class Home extends React.Component{
         super(props);
         this.state={
           defis: [],
-          lastDefis:[]
         }
     }
 
     _uploadScreen(){
         this.props.navigation.navigate("Envoi de défi");
+    }
+
+
+    async _readDefisAsync(){
+      let res = await FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json');
+      if (res['exists'] == false){return 0;}
+      let content = await FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json');
+      return content
     }
 
     _readDefis(){
@@ -27,23 +34,64 @@ class Home extends React.Component{
 
             if (content !== JSON.stringify(this.state.defis) && this._ismounted){
               this.setState({
-                lastDefis: this.state.defis,
                 defis: JSON.parse(content)
               })
             } 
           })
       })
     }
+
+    async _saveDefi(defi){
+        
+      let defisStr = await this._readDefisAsync();
+      let defis = JSON.parse(defisStr);
+
+      if (typeof defis != 'object'){
+        defis = []
+      }
+      
+      let found = 0;
+
+      for(let i=0;i<defis.length;i++){
+        if (defis[i].id == defi.id || defis[i].id == defi.localId){
+          found = 1;
+          defis[i] = defi;
+        }
+      }
+
+      if (!found){
+        defis.push(defi);
+      }
+      await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
+      DeviceEventEmitter.emit("event.DefisChanged", {});
+  }
+
     _deleteAllDefis(){
       FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', '[]');
+    }
+
+    _checkStatus(){
+      this.state.defis.forEach((defi)=>{
+        if (defi.status == 1){
+          fetch('http://assos.utc.fr/integ/integ2021/api/check_status.php?id='+defi.id)
+        .then(response => response.json())
+        .then(data => {
+          let status = parseInt(data['data'])
+          console.log('id='+defi.id+', status='+status);
+          if (status != defi.status){
+            defi.status = status;
+            this._saveDefi(defi);
+          }
+        });
+        }
+      })
     }
     
     componentDidMount(){
       DeviceEventEmitter.addListener("event.DefisChanged", () => this._readDefis());
-      
-      this._readDefis();  
       this._ismounted = true;
-      this._deleteAllDefis();
+      this._readDefis();
+      //this._deleteAllDefis();
     }
     componentWillUnmount(){
       this._ismounted = false;
@@ -51,12 +99,14 @@ class Home extends React.Component{
 
     componentDidUpdate(prevProps){
       this._readDefis();
+      this._checkStatus();
     }
 
     render(){
       //(JSON.stringify(this.state.defis));
         return (
           <View style={styles.container}>
+            <Text style={styles.title}>Défis</Text>
             <FlatList
                 style={{width: '100%'}}
                 data={this.state.defis}
@@ -64,7 +114,7 @@ class Home extends React.Component{
                 renderItem={({item}) => <ItemDefi defi={item}/>}
             />
             <View style={styles.centeredContainer}>
-                <IconButton style={styles.plusButton} icon='plus-circle' color={Colors.green500} size={50} onPress={() => {this._uploadScreen()}}/>
+                <IconButton style={styles.plusButton} icon='plus-circle' color="#EA8BDE" size={50} onPress={() => {this._uploadScreen()}}/>
             </View>
           </View>
         );
@@ -76,12 +126,14 @@ const styles = StyleSheet.create({
     flex: 1,
     //alignItems: 'center',
     //justifyContent: 'center',
+    backgroundColor: "#121212",
+    //paddingTop: 50
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 15,
-    marginTop: 15,
+    color:'white'
   },
   separator: {
     marginVertical: 20,

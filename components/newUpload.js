@@ -80,10 +80,15 @@ class newUpload extends React.Component{
         
         let defisStr = await this._readDefis();
         let defis = JSON.parse(defisStr);
+
+        if (typeof defis != 'object'){
+          defis = []
+        }
+        
         let found = 0;
   
         for(let i=0;i<defis.length;i++){
-          if (defis[i].id == defi.id){
+          if (defis[i].id == defi.id || defis[i].id == defi.localId){
             found = 1;
             defis[i] = defi;
           }
@@ -92,10 +97,8 @@ class newUpload extends React.Component{
         if (!found){
           defis.push(defi);
         }
-
         await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
         DeviceEventEmitter.emit("event.DefisChanged", {});
-
     }
 
     async _readDefis(){
@@ -132,18 +135,16 @@ class newUpload extends React.Component{
         
         let defi = JSON.parse(JSON.stringify(this.state.defi));
         defi.status = 1;
+        defi.localId = defi.id;
         defi.id = parseInt(JSON.parse(xhr.response).data);
+        
         this._saveDefi(defi);
       })
 
       xhr.open('POST','https://assos.utc.fr/integ/integ2021/api/upload-video.php');
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
-      this.setState({
-        loading: false,
-      })
-      xhr.send(formData);
 
-      
+      xhr.send(formData);
     }
 
     _pickImage = async () => {
@@ -253,7 +254,6 @@ class newUpload extends React.Component{
                 
                 
                 {this._displayLoading()}
-                {this._displayUploading()}
                 {/* MODAL DE CHOIX DE DEFI*/}
                 <Modal
                     animationType="slide"
@@ -290,15 +290,17 @@ class newUpload extends React.Component{
                     </View>
                 </Modal>
 
+                {/* BOUTON DE CHOIX DE DEFI*/}
+                <View style={styles.actionButton}>
+                    <Button onPress={()=>{this._setModalVisible(true)}} title='Choisir un défi' color='#000000' ></Button>
+                </View>
+
                 {/* BOUTON DE CHOIX DE VIDEO*/}
                 <View style={styles.actionButton}>
                     <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
                 </View>
 
-                {/* BOUTON DE CHOIX DE DEFI*/}
-                <View style={styles.actionButton}>
-                    <Button onPress={()=>{this._setModalVisible(true)}} title='Choisir un défi' color='#000000' ></Button>
-                </View>
+                
 
                 {/* CHOIX DE NOMBRE DE NOUVO */}
                 <NumberPicker update={(n)=>{this._updateNumber(n)}}></NumberPicker>

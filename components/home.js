@@ -7,8 +7,8 @@ class Home extends React.Component{
     }
     render(){
         return (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Home!</Text>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#121212" }}>
+            <Text style={{color: "white"}}>Home!</Text>
           </View>
         );
     }

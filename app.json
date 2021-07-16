@@ -1,14 +1,19 @@
 {
   "expo": {
-    "name": "App_integ_2021",
+    "name": "Intégration UTC",
     "slug": "App_integ_2021",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/integ_logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash_integ.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#121212"
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#121212",
+      "translucent": false,
+      "barStyle":"light-content"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,12 +26,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage": "./assets/integ_logo.png",
+        "backgroundColor": "#121212"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/integ_logo.png"
     }
   }
 }
