@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground} from "react-native";
+import {StyleSheet, View, Text, RefreshControl,ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import ItemDefi from "./itemDefi";
@@ -11,6 +11,7 @@ class Home extends React.Component{
         super(props);
         this.state={
           defis: [],
+          refreshing: false
         }
     }
 
@@ -70,19 +71,16 @@ class Home extends React.Component{
       FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', '[]');
     }
 
-    _checkStatus(){
-      this.state.defis.forEach((defi)=>{
+    async _checkStatus(){
+      this.state.defis.forEach(async (defi)=>{
         if (defi.status == 1){
-          fetch('http://assos.utc.fr/integ/integ2021/api/check_status.php?id='+defi.id)
-        .then(response => response.json())
-        .then(data => {
+          let response = await fetch('http://assos.utc.fr/integ/integ2021/api/check_status.php?id='+defi.id);
+          let data = await response.json();
           let status = parseInt(data['data'])
-          console.log('id='+defi.id+', status='+status);
           if (status != defi.status){
             defi.status = status;
             this._saveDefi(defi);
           }
-        });
         }
       })
     }
@@ -115,6 +113,14 @@ class Home extends React.Component{
       this._checkStatus();
     }
 
+    onRefresh(){
+      this.setState({refreshing: true});
+      this._checkStatus().then(()=>{
+        this.setState({refreshing: false});
+      })
+      
+    }
+
     render(){
       //(JSON.stringify(this.state.defis));
         return (
@@ -138,12 +144,16 @@ class Home extends React.Component{
               </ImageBackground>
             
             <Text style={styles.title}>Défis</Text>
-            <FlatList
-                style={{width: '100%'}}
-                data={this.state.defis}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({item}) => <ItemDefi defi={item}/>}
-            />
+            <View>
+              <FlatList
+                  refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
+                  style={{width: '100%'}}
+                  data={this.state.defis}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({item}) => <ItemDefi defi={item}/>}
+              />
+            </View>
+            
             <View style={styles.centeredContainer}>
                 <IconButton style={styles.plusButton} icon='plus-circle' color="#EA8BDE" size={50} onPress={() => {this._uploadScreen()}}/>
             </View>
@@ -167,10 +177,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     borderRadius:20,
-    
     overflow:'hidden',
-    
-    
   },
   headerInside:{
     flexDirection:'row',

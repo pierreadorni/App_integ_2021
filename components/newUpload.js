@@ -7,7 +7,7 @@ import NumberPicker from './numberPicker.js';
 import Defi from './defi.js';
 import ChoixClan from './choixClan.js'
 import ProgressBar from './progressBar.js';
-import Toast from 'react-native-simple-toast';
+import Toast from 'react-native-root-toast'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import NumberTextInput from 'rn-weblineindia-number-input';
@@ -208,7 +208,13 @@ class newUpload extends React.Component{
 
         
       }else{
-        Toast.show('Il manque le défi ou la vidéo.', Toast.SHORT);
+        Toast.show('Il manque le défi ou la vidéo.', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true
+        });
+        //Toast.show('Il manque le défi ou la vidéo.', Toast.SHORT);
       }
     }
 
