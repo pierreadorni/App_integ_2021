@@ -22,16 +22,35 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "light",
+      "infoPlist": {
+        "UIUserInterfaceStyle": "Light"
+      }
     },
     "android": {
+      "package":"fr.utc.integration",
+      "versionCode":1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/integ_logo.png",
         "backgroundColor": "#121212"
-      }
+      },
+      "forceDarkAllowed": false,
+      "userInterfaceStyle": "light"
     },
     "web": {
       "favicon": "./assets/integ_logo.png"
+    },
+    "builds": {
+      "android": {
+        "release": {},
+        "preview": {
+          "buildType": "apk"
+        },
+        "preview2": {
+          "gradleCommand": ":app:assembleRelease"
+        }
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Fontisto } from '@expo/vector-icons';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
+
 class ItemDefi extends React.Component{
     constructor(props){
         super(props)
@@ -115,7 +116,6 @@ class ItemDefi extends React.Component{
                     borderWidth: 1,
                     borderColor: "#ff0000",
                     borderRadius: 10
-
                 }}>
                     <Text style={{color:"#ff0000", marginBottom: 2}}> Refusé </Text>
                 </View>
@@ -205,7 +205,8 @@ const styles = StyleSheet.create({
     progressText:{
         textAlign: 'center',
         position: 'relative',
-        top: -35
+        top: -35,
+        color:'white'
     }
 })
 

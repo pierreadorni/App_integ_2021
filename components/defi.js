@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
         justifyContent:'center',
     },
     text:{
-        textAlign:'center'
+        textAlign:'center',
+        color:'white'
     },
     separator:{
         height: 1,
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
         marginLeft:'5%',
         marginTop:10,
         marginBottom:10,
-        backgroundColor: 'rgba(0,0,0,0.1)',
+        backgroundColor: 'rgba(255,255,255,0.1)',
     }
 })
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter} from "react-native";
+import {StyleSheet, View, Text, ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import ItemDefi from "./itemDefi";
@@ -86,6 +86,19 @@ class Home extends React.Component{
         }
       })
     }
+    _totalPoints(){
+      let total = 0;
+      this.state.defis.forEach((defi)=>{
+        console.log('status:'+defi.status);
+        if (defi.status==2){
+          total += defi.defi.points * defi.nb;
+        }
+      })
+      return total;
+    }
+    _nDefis(){
+      return this.state.defis.length;
+    }
     
     componentDidMount(){
       DeviceEventEmitter.addListener("event.DefisChanged", () => this._readDefis());
@@ -106,6 +119,24 @@ class Home extends React.Component{
       //(JSON.stringify(this.state.defis));
         return (
           <View style={styles.container}>
+            
+              <ImageBackground source={{ uri: "http://assos.utc.fr/integ/integ2021/img/background2.jpg" }} resizeMode="cover" style={styles.header} imageStyle={{width:400}}>
+                <View style={styles.headerInside}>
+                  <View style={styles.headerNumberContainer}>
+                    <Text style={styles.headerNumber}>{this._totalPoints()}</Text>
+                    <Text style={styles.headerText}>Points Gagnés</Text>
+                  </View>
+                  <View style={styles.headerMiddle}>
+                    <View style={{backgroundColor:'#ffffff', height:80,width:2,marginTop:10}}></View>
+                  </View>
+                  <View style={styles.headerNumberContainer}>
+                    <Text style={styles.headerNumber}>{this._nDefis()}</Text>
+                    <Text style={styles.headerText}>Défis</Text>
+                  </View>
+                </View>
+
+              </ImageBackground>
+            
             <Text style={styles.title}>Défis</Text>
             <FlatList
                 style={{width: '100%'}}
@@ -128,6 +159,50 @@ const styles = StyleSheet.create({
     //justifyContent: 'center',
     backgroundColor: "#121212",
     //paddingTop: 50
+  },
+  header:{
+    height: 100,
+    width:'80%',
+    marginLeft: '10%',
+    marginTop: 20,
+    marginBottom: 20,
+    borderRadius:20,
+    
+    overflow:'hidden',
+    
+    
+  },
+  headerInside:{
+    flexDirection:'row',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    height:'100%',
+  },
+
+  headerSeparator:{
+    height: 60,
+    width:2,
+    backgroundColor:'white',
+    color:'white',
+    borderColor:'white',
+    marginTop: 20,
+
+  },
+  headerNumberContainer:{
+    flex:4,
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  headerNumber:{
+    color:"white",
+    fontWeight:'bold',
+    fontSize:40
+  },
+  headerMiddle:{
+    flex:1,
+    alignItems:'center',
+  },
+  headerText:{
+    color:'white'
   },
   title: {
     fontSize: 20,

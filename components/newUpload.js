@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Button, Modal, ActivityIndicator, FlatList, DeviceEventEmitter} from "react-native";
+import {StyleSheet, View, Text, Image,TouchableOpacity, TouchableHighlight, Button, Modal, ActivityIndicator, FlatList, DeviceEventEmitter} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -8,6 +8,9 @@ import Defi from './defi.js';
 import ChoixClan from './choixClan.js'
 import ProgressBar from './progressBar.js';
 import Toast from 'react-native-simple-toast';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as VideoThumbnails from 'expo-video-thumbnails';
+import NumberTextInput from 'rn-weblineindia-number-input';
 
 const options = {
   title: 'Select Avatar',
@@ -51,7 +54,8 @@ class newUpload extends React.Component{
             number: 1,
             loading: false,
             uploading: false,
-            uploadingProgress: 0
+            uploadingProgress: 0,
+            thumbnail: undefined
         };
     }
 
@@ -73,8 +77,6 @@ class newUpload extends React.Component{
             modalVisible: v
         })
     }
-
-
 
     async _saveDefi(defi){
         
@@ -165,7 +167,9 @@ class newUpload extends React.Component{
             this.setState({
                 image : result
             })
+            this._generateThumbnail(result['uri']);
         }
+        
     };
     _setClan(c){
         this.setState({
@@ -178,7 +182,6 @@ class newUpload extends React.Component{
             number:n
         })
     }
-
 
     _submit(){
       if(this.state.defiChoisi != undefined && this.state.image != undefined){
@@ -235,6 +238,42 @@ class newUpload extends React.Component{
       }
     }
 
+    _displayDefiButton(){
+      if (this.state.defiChoisi == undefined){
+        return ("Choisir un défi")
+      }else{
+        return (this.state.defiChoisi.description)
+      }
+    }
+
+    _generateThumbnail = async (url) => {
+      try {
+        const { uri } = await VideoThumbnails.getThumbnailAsync(
+          url,
+          {
+            time: 15000,
+          }
+
+        );
+        this.setState({ thumbnail: uri });
+      } catch (e) {
+        console.warn(e);
+      }
+    };
+
+    _displayThumbnail(){
+      if (this.state.thumbnail){
+          return (
+              <Image source={{uri: this.state.thumbnail}} style={{width:'100%',height:'100%'}}></Image>
+          )
+      }else{
+          return (
+            <Ionicons name={"camera"} size={50}></Ionicons>
+          )
+      }
+      
+  }
+
     componentDidMount(){
       fetch('http://assos.utc.fr/integ/integ2021/api/get_defis.php')
         .then(response => response.json())
@@ -250,8 +289,7 @@ class newUpload extends React.Component{
 
     render(){
         return(
-            <View style={{alignItems: 'center',flexDirection:'column', flex:1}}>
-                
+            <View style={{alignItems: 'center',flexDirection:'column', flex:1, backgroundColor:"#121212", paddingTop: 120}}>
                 
                 {this._displayLoading()}
                 {/* MODAL DE CHOIX DE DEFI*/}
@@ -290,33 +328,60 @@ class newUpload extends React.Component{
                     </View>
                 </Modal>
 
+                {/* croix pour fermer */}
+                <View style={{position:'absolute',left:10,top:10}}>
+                  <TouchableOpacity onPress={this.props.navigation.goBack} >
+                    <Ionicons name={"close"} size={50} color={'#ffffff'} ></Ionicons>
+                  </TouchableOpacity>
+                </View>
+                
+
                 {/* BOUTON DE CHOIX DE DEFI*/}
-                <View style={styles.actionButton}>
-                    <Button onPress={()=>{this._setModalVisible(true)}} title='Choisir un défi' color='#000000' ></Button>
+                <View style={{position:'absolute',left:10,top:80}}>
+                  <TouchableOpacity onPress={()=>{this._setModalVisible(true)}}>
+                    <Text style={{color:'#00BBE1', fontStyle:'italic',fontSize:20}}> {this._displayDefiButton()} </Text>
+                  </TouchableOpacity>
                 </View>
 
                 {/* BOUTON DE CHOIX DE VIDEO*/}
-                <View style={styles.actionButton}>
-                    <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
-                </View>
-
-                
+                <TouchableOpacity onPress={this._pickImage}>
+                      <View style={{backgroundColor:'#D8D8D8', height:200, width:130, marginTop: 30, marginBottom: 30, alignItems:'center', justifyContent:'center'}}>
+                          {this._displayThumbnail()}
+                      </View>
+                </TouchableOpacity>
+                {
+                  /*
+                  <View style={styles.actionButton}>
+                      <Button onPress={this._pickImage} title='Choisir une vidéo' color='#000000' ></Button>
+                  </View>
+                  */
+                }
 
                 {/* CHOIX DE NOMBRE DE NOUVO */}
-                <NumberPicker update={(n)=>{this._updateNumber(n)}}></NumberPicker>
+                <Text style={{color:"white", position: 'relative', left:"-35%", fontWeight:"bold"}}> Participants </Text>
+                <NumberTextInput
+                  type='decimal'
+                  decimalPlaces={0}
+                  value={this.state.number}
+                  onUpdate={(value) => this.setState({ number: value })}
+                  style={styles.textInputStyle}
+                  returnKeyType={'done'}
+                  allowNegative={false}
+                ></NumberTextInput>
+
+                {/*<NumberPicker update={(n)=>{this._updateNumber(n)}}></NumberPicker>*/}
                 
                 {/* CHOIX DU CLAN */}
+                <Text style={{color:"white", position: "relative", left:"-41%", top:20, fontWeight:"bold"}}> Clan </Text>
                 <ChoixClan selected={this.state.clan} kb={()=>{this._setClan('kb')}} vb={()=>{this._setClan('vb')}} tampi={()=>{this._setClan('tampi')}} youa={()=>{this._setClan('youa')}}></ChoixClan>
 
                 {/* AFFICHAGE DEBUG */}
-                <Text>{/*this._displayDebug()*/}</Text>
+                
                 
 
                 {/* VALIDATION DU FORMULAIRE */}
                 <TouchableOpacity style={styles.uploadButton} onPress={()=>{this._submit()}}>
-                    <View></View>
-                    <IconButton style={styles.uploadIcon} icon='cloud' color={Colors.white} size={45} />
-                    <Text style={{fontSize: 25,fontWeight:'bold', color:Colors.white, marginLeft:-15,marginTop:-5}}> Upload </Text>
+                    <Text style={{ color:"white", fontSize:20, fontWeight:'bold', textTransform:"uppercase", marginLeft: 20}}> Envoyer </Text>
                 </TouchableOpacity>
 
         </View>
@@ -330,7 +395,6 @@ const styles = StyleSheet.create({
         fontSize: 200,
         textAlign:'center',
         marginTop: '30%'
-
     },
     actionButton: {
         marginLeft: '25%',
@@ -342,12 +406,14 @@ const styles = StyleSheet.create({
     uploadButton:{
       flex:1,
       alignItems: "center",
+      justifyContent:'center',
       position: 'absolute',
-      bottom: 20,
+      bottom: 50,
+      right: 50,
       flexDirection:'row',
-      backgroundColor: Colors.green500,
+      backgroundColor: "#EA8BDE",
       height: 50,
-      borderRadius: 100,
+      borderRadius: 10,
       paddingRight: 20,
   },
 
@@ -361,13 +427,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+    
   },
   modalView: {
     flex: 1,
     width: '80%',
     height:'100%',
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor:"#2C2C2C",
+    borderColor: "#ffffff",
+    borderWidth:1,
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -379,6 +448,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    
   },
   textStyle: {
     color: 'white',
@@ -398,6 +468,16 @@ const styles = StyleSheet.create({
     zIndex: 1,
     alignItems:'center',
     justifyContent:'center'
+  },
+  textInputStyle:{
+    color:"rgba(255,255,255,0.8)",
+    width: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.8)",
+    fontSize: 20,
+    position:'relative',
+    left: "-39%",
+    fontWeight: 'bold'
   }
 
 })
