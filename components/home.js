@@ -8,10 +8,8 @@ class Home extends React.Component{
     render(){
         return (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#121212" }}>
-            <Text style={{color: "white"}}>coucou tm!</Text>
-            <Image source={{uri:"https://assos.utc.fr/integ/jambon67/images/helene1.jpg"}} style={{width: 100,height:100}}></Image>
-            <Text style={{color: "white"}}>tu penses quoi de la page d'accueil?</Text>
-            <Text style={{color: "white"}}>trigano au cachot </Text>
+            <Text style={{color: "white"}}>Page d'accueil</Text>
+
             <Text></Text>
           </View>
         );

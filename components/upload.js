@@ -87,7 +87,7 @@ class Home extends React.Component{
     _totalPoints(){
       let total = 0;
       this.state.defis.forEach((defi)=>{
-        console.log('status:'+defi.status);
+
         if (defi.status==2){
           total += defi.defi.points * defi.nb;
         }
@@ -133,7 +133,7 @@ class Home extends React.Component{
                     <Text style={styles.headerText}>Points Gagnés</Text>
                   </View>
                   <View style={styles.headerMiddle}>
-                    <View style={{backgroundColor:'#ffffff', height:80,width:2,marginTop:10}}></View>
+                    <View style={{backgroundColor:'#ffffff', height:100,width:2,marginTop:10}}></View>
                   </View>
                   <View style={styles.headerNumberContainer}>
                     <Text style={styles.headerNumber}>{this._nDefis()}</Text>
@@ -147,7 +147,7 @@ class Home extends React.Component{
             <View>
               <FlatList
                   refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
-                  style={{width: '100%'}}
+                  style={{width: '100%', height:'73%'}}
                   data={this.state.defis}
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({item}) => <ItemDefi defi={item}/>}
@@ -165,15 +165,16 @@ class Home extends React.Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom:0,
     //alignItems: 'center',
     //justifyContent: 'center',
     backgroundColor: "#121212",
     //paddingTop: 50
   },
   header:{
-    height: 100,
-    width:'80%',
-    marginLeft: '10%',
+    height: 120,
+    width:'90%',
+    marginLeft: '5%',
     marginTop: 20,
     marginBottom: 20,
     borderRadius:20,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   },
 
   headerSeparator:{
-    height: 60,
+    height: 80,
     width:2,
     backgroundColor:'white',
     color:'white',
