@@ -170,9 +170,13 @@ class newUpload extends React.Component{
           console.log('too large');
           Toast.show('Le fichier choisi est trop volumineux. taille max: 100Mo', {
             duration: Toast.durations.SHORT,
-            position: Toast.positions.BOTTOM,
+            position: Toast.positions.CENTER,
             shadow: true,
-            animation: true
+            animation: true,
+            delay:0,
+            hideOnPress: true,
+            backgroundColor: "#fff",
+            textColor:"#000"
           });
         }
 
@@ -228,7 +232,9 @@ class newUpload extends React.Component{
           shadow: true,
           animation: true,
           delay:0,
-          hideOnPress: true
+          hideOnPress: true,
+          backgroundColor: "#fff",
+          textColor:"#000"
         });
         //Toast.show('Il manque le défi ou la vidéo.', Toast.SHORT);
       }
@@ -301,7 +307,6 @@ class newUpload extends React.Component{
         .then(response => response.json())
         .then(data => {
           this.setState({ defisListe: data });
-
         });
     }
 

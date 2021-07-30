@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './components/home';
 import UploadScreen from './components/upload';
+import VerifScreen from './components/verif';
 import newUploadScreen from './components/newUpload';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
@@ -30,6 +31,16 @@ function UploadStackScreen() {
   );
 }
 
+const VerifStack = createStackNavigator();
+
+function VerifStackScreen() {
+  return (
+    <UploadStack.Navigator options={{headerShown :false}}>
+        <UploadStack.Screen name="Verif" component={VerifScreen} options={{headerShown :false}}/>
+    </UploadStack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -45,6 +56,8 @@ export default function App() {
                 iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
               } else if (route.name === 'Upload') {
                 iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
+              } else if (route.name == "Verif") {
+                iconName = focused ? "checkmark-circle" : "checkmark-circle-outline";
               }
 
               return <Ionicons name={iconName} size={size} color={color} style={{backgroundColor: "#2C2C2C"}}/>;
@@ -64,6 +77,7 @@ export default function App() {
         >
           <Tab.Screen name="Home" component={HomeStackScreen} />
           <Tab.Screen name="Upload" component={UploadStackScreen} />
+          <Tab.Screen name="Verif" component={VerifStackScreen} />
         </Tab.Navigator>
     </NavigationContainer>
     </RootSiblingParent>
