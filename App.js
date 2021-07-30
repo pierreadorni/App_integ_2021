@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './components/home';
 import UploadScreen from './components/upload';
 import newUploadScreen from './components/newUpload';
-
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 const HomeStack = createStackNavigator();
 
@@ -34,7 +34,8 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <RootSiblingParent>
+      <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -65,5 +66,7 @@ export default function App() {
           <Tab.Screen name="Upload" component={UploadStackScreen} />
         </Tab.Navigator>
     </NavigationContainer>
+    </RootSiblingParent>
+    
   );
 }

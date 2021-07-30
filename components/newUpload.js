@@ -3,7 +3,6 @@ import {StyleSheet, View, Text, Image,TouchableOpacity, TouchableHighlight, Butt
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import NumberPicker from './numberPicker.js';
 import Defi from './defi.js';
 import ChoixClan from './choixClan.js'
 import ProgressBar from './progressBar.js';
@@ -163,7 +162,22 @@ class newUpload extends React.Component{
           loading: false
         })
 
-        if (!result.cancelled) {
+        let infos = await FileSystem.getInfoAsync(result.uri);
+
+        console.log(JSON.stringify(infos));
+
+        if (infos.size > 100000000){
+          console.log('too large');
+          Toast.show('Le fichier choisi est trop volumineux. taille max: 100Mo', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true
+          });
+        }
+
+        if (!result.cancelled && infos.size < 100000000) {
+            console.log(JSON.stringify(result));
             this.setState({
                 image : result
             })
@@ -210,9 +224,11 @@ class newUpload extends React.Component{
       }else{
         Toast.show('Il manque le défi ou la vidéo.', {
           duration: Toast.durations.SHORT,
-          position: Toast.positions.BOTTOM,
+          position: Toast.positions.CENTER,
           shadow: true,
-          animation: true
+          animation: true,
+          delay:0,
+          hideOnPress: true
         });
         //Toast.show('Il manque le défi ou la vidéo.', Toast.SHORT);
       }
@@ -375,7 +391,7 @@ class newUpload extends React.Component{
                   allowNegative={false}
                 ></NumberTextInput>
 
-                {/*<NumberPicker update={(n)=>{this._updateNumber(n)}}></NumberPicker>*/}
+
                 
                 {/* CHOIX DU CLAN */}
                 <Text style={{color:"white", position: "relative", left:"-41%", top:20, fontWeight:"bold"}}> Clan </Text>
