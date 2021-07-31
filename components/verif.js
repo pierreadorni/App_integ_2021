@@ -9,24 +9,23 @@ class Verif extends React.Component {
         super(props);
         this.state = {
             defis: [],
+            loadedDefis: []
         }
     }
 
     async _getDefiFromServer(){
-        let response = await fetch('https://assos.utc.fr/integ/integ2021/api/verif_get_defi.php');
-        // console.log('response: '+JSON.stringify(response));
+        let response = await fetch('https://assos.utc.fr/integ/integ2021/api/get_defi_verif.php');
         let data = await response.json();
-        console.log('data: '+JSON.stringify(data));
-        let defi = JSON.parse(data['data'])
-        return defi
+        
+        return data
     }
 
     async _freeDefi(id){
         let response = await fetch('http://assos.utc.fr/integ/integ2021/api/free_defi.php?id='+id);
     }
-
     _renderSwiper(){
-        if(this.state.defis.length > 0){
+    
+        if(this.state.loadedDefis.length > 0){
             return(
                 <Swiper
                     cards={this.state.defis}
@@ -34,28 +33,37 @@ class Verif extends React.Component {
                         if (defi != undefined){
                             return (
                                 <View style={styles.card}>
-                                    <Text style={styles.text}>{defi.id}</Text>
+                                    <Text style={styles.text}>{defi['id']}</Text>
                                 </View>
                             )
                         }
                     }}
-                    
                     onSwiped={
-                        () => {
-                            let a = this.state.cards;
-                            this._getDefiFromServer().then((defi)=>{
-                                a.push(defi);
-                            })
+                        (cardIndex) => {
+                            console.log(this.state.loadedDefis);
+                            let loaded = this.state.loadedDefis;
+                            loaded.shift();
                             this.setState({
-                                defis:a,
+                                loadedDefis:loaded
                             })
-                            console.log(this.state.defis);
-
+                            this._getDefiFromServer().then((defi)=>{
+                                if (Object.keys(defi).length > 0){
+                                    let a = this.state.defis;
+                                    let loaded = this.state.loadedDefis;
+                                    a.push(defi);
+                                    loaded.push(defi);
+                                    this.setState({
+                                        defis:a,
+                                        loadedDefis: loaded
+                                    })
+                                }
+                            })
                         }
                     }
+
                     cardIndex={0}
                     backgroundColor={"#121212"}
-                    stackSize={2}
+                    stackSize={3}
                     disableBottomSwipe={true}
                     disableTopSwipe={true}
                     >
@@ -73,10 +81,20 @@ class Verif extends React.Component {
 
 
     componentDidMount() {
-        let defis = [];
-        for (let i=0;i<2;i++){
+        
+        for (let i=0;i<3;i++){
             this._getDefiFromServer().then((defi)=>{
-                defis.push(defi);
+                
+                if (Object.keys(defi).length > 0 ){
+                    let defis = this.state.defis;
+                    let loadedDefis = this.state.loadedDefis;
+                    defis.push(defi);
+                    loadedDefis.push(defi);
+                    this.setState({
+                        defis: defis,
+                        loadedDefis: loadedDefis
+                    })
+                }
             })
         }
         

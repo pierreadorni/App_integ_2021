@@ -313,7 +313,7 @@ class newUpload extends React.Component{
     componentWillUnmount(){
       DeviceEventEmitter.removeAllListeners("event.mapMarkerSelected")
     }
-
+  
     render(){
         return(
             <View style={{alignItems: 'center',flexDirection:'column', flex:1, backgroundColor:"#121212", paddingTop: 120}}>
