@@ -1,7 +1,7 @@
 import { definitionSyntax } from "css-tree";
 import { appendConstructorOption } from "jimp";
 import React from "react";
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet, RefreshControl, ScrollView} from 'react-native';
 import Swiper from 'react-native-deck-swiper'
 
 class Verif extends React.Component {
@@ -9,7 +9,8 @@ class Verif extends React.Component {
         super(props);
         this.state = {
             defis: [],
-            loadedDefis: []
+            loadedDefis: [],
+            refreshing: false
         }
     }
 
@@ -78,6 +79,11 @@ class Verif extends React.Component {
             )
         }
     }
+    onRefresh(){
+        this.setState({refreshing: true});
+        this.componentDidMount();
+        this.setState({refreshing: false});
+    }
 
 
     componentDidMount() {
@@ -109,9 +115,12 @@ class Verif extends React.Component {
 
     render(){
         return(
-            <View style={styles.body}>
+            <ScrollView 
+            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
+            contentContainerStyle={styles.body}
+            >
                 {this._renderSwiper()}
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -119,7 +128,7 @@ class Verif extends React.Component {
 const styles = StyleSheet.create({
     body:{
         backgroundColor: "#121212",
-        flex: 1
+        flex: 1,
     },
     card: {
         width: "90%",
