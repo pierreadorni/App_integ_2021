@@ -2,6 +2,7 @@ import { definitionSyntax } from "css-tree";
 import { appendConstructorOption } from "jimp";
 import React from "react";
 import {View, Text, StyleSheet, RefreshControl, ScrollView} from 'react-native';
+import { Video } from 'expo-av';
 import Swiper from 'react-native-deck-swiper'
 
 class Verif extends React.Component {
@@ -10,7 +11,8 @@ class Verif extends React.Component {
         this.state = {
             defis: [],
             loadedDefis: [],
-            refreshing: false
+            refreshing: false,
+            swiped: 0
         }
     }
 
@@ -21,35 +23,49 @@ class Verif extends React.Component {
         return data
     }
 
-    async _freeDefi(id){
-        let response = await fetch('http://assos.utc.fr/integ/integ2021/api/free_defi.php?id='+id);
+    async _setStatus(id, status){
+        let response = await fetch('http://assos.utc.fr/integ/integ2021/api/set_status.php?id='+id+"&status="+status);
     }
+
     _renderSwiper(){
     
         if(this.state.loadedDefis.length > 0){
+
             return(
                 <Swiper
                     cards={this.state.defis}
                     renderCard={(defi) => {
                         if (defi != undefined){
+
                             return (
                                 <View style={styles.card}>
-                                    <Text style={styles.text}>{defi['id']}</Text>
+
+                                    <Video
+                                        shouldPlay
+                                        style={styles.video}
+                                        source={{
+                                        uri: "https://assos.utc.fr/integ/integ2021/api/"+defi.uri,
+                                        }}
+                                        resizeMode="contain"
+                                        isLooping
+                                    />
                                 </View>
                             )
                         }
                     }}
                     onSwiped={
                         (cardIndex) => {
-                            console.log(this.state.loadedDefis);
+                            
                             let loaded = this.state.loadedDefis;
                             loaded.shift();
                             this.setState({
-                                loadedDefis:loaded
+                                loadedDefis:loaded,
+                                swiped:this.state.swiped+1
                             })
                             this._getDefiFromServer().then((defi)=>{
                                 if (Object.keys(defi).length > 0){
                                     let a = this.state.defis;
+                                    console.log(a);
                                     let loaded = this.state.loadedDefis;
                                     a.push(defi);
                                     loaded.push(defi);
@@ -61,10 +77,20 @@ class Verif extends React.Component {
                             })
                         }
                     }
+                    onSwipedLeft={
+                        (cardIndex)=>{
+                            this._setStatus(this.state.defis[cardIndex].id,0)
+                        }
+                    }
+                    onSwipedRight={
+                        (cardIndex)=>{
+                            this._setStatus(this.state.defis[cardIndex].id,2)
+                        }
+                    }
 
-                    cardIndex={0}
+                    cardIndex={this.state.swiped}
                     backgroundColor={"#121212"}
-                    stackSize={3}
+                    stackSize={2}
                     disableBottomSwipe={true}
                     disableTopSwipe={true}
                     >
@@ -88,7 +114,7 @@ class Verif extends React.Component {
 
     componentDidMount() {
         
-        for (let i=0;i<3;i++){
+        for (let i=0;i<2;i++){
             this._getDefiFromServer().then((defi)=>{
                 
                 if (Object.keys(defi).length > 0 ){
@@ -108,7 +134,7 @@ class Verif extends React.Component {
 
     componentWillUnmount() {
         this.state.defis.forEach((defi)=>{
-            this._freeDefi(defi.id);
+            this._setStatus(defi.id,1);
         })
     }
 
@@ -135,8 +161,8 @@ const styles = StyleSheet.create({
         marginLeft: "5%",
         height: "90%",
         borderRadius: 4,
-        borderWidth: 2,
-        // borderColor: "#E8E8E8",
+        borderWidth: 1,
+        borderColor: "#E8E8E8",
         justifyContent: "center",
         backgroundColor: "#555",
     },
@@ -145,6 +171,9 @@ const styles = StyleSheet.create({
         fontSize: 50,
         backgroundColor: "transparent",
         color: 'white'
+    },
+    video: {
+        flex:1
     }
 })
 

@@ -35,7 +35,8 @@
     "react-native-web": "~0.13.12",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
-    "rn-weblineindia-number-input": "^1.0.1"
+    "rn-weblineindia-number-input": "^1.0.1",
+    "expo-av": "~9.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
