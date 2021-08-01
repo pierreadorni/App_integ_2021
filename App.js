@@ -4,10 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import HomeScreen from './components/home';
-import UploadScreen from './components/upload';
-import VerifScreen from './components/verif';
-import newUploadScreen from './components/newUpload';
+import HomeScreen from './screens/home';
+import UploadScreen from './screens/upload';
+import VerifScreen from './screens/verif';
+import newUploadScreen from './screens/newUpload';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 const HomeStack = createStackNavigator();

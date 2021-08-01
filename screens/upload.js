@@ -2,7 +2,7 @@ import React from "react";
 import {StyleSheet, View, Text, RefreshControl,ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
-import ItemDefi from "./itemDefi";
+import ItemDefi from "../components/itemDefi";
 
 
 class Home extends React.Component{

@@ -1,6 +1,6 @@
 import React from "react";
 import {View, Text, StyleSheet, RefreshControl, ScrollView} from 'react-native';
-import DefiCard from "./defiCard";
+import DefiCard from "../components/defiCard";
 import Swiper from 'react-native-deck-swiper'
 
 class Verif extends React.Component {
@@ -53,7 +53,6 @@ class Verif extends React.Component {
                             this._getDefiFromServer().then((defi)=>{
                                 if (Object.keys(defi).length > 0){
                                     let a = this.state.defis;
-                                    console.log(a);
                                     let loaded = this.state.loadedDefis;
                                     a.push(defi);
                                     loaded.push(defi);
@@ -122,7 +121,7 @@ class Verif extends React.Component {
         .then(response => response.json())
         .then(data => {
           this.setState({ defisListe: data });
-          console.log(JSON.stringify(data));
+
         });
 
         

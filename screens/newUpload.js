@@ -3,9 +3,9 @@ import {StyleSheet, View, Text, Image,TouchableOpacity, TouchableHighlight, Butt
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import Defi from './defi.js';
-import ChoixClan from './choixClan.js'
-import ProgressBar from './progressBar.js';
+import Defi from '../components/defi.js';
+import ChoixClan from '../components/choixClan.js'
+import ProgressBar from '../components/progressBar.js';
 import Toast from 'react-native-root-toast'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
