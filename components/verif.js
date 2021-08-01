@@ -1,8 +1,6 @@
-import { definitionSyntax } from "css-tree";
-import { appendConstructorOption } from "jimp";
 import React from "react";
 import {View, Text, StyleSheet, RefreshControl, ScrollView} from 'react-native';
-import { Video } from 'expo-av';
+import DefiCard from "./defiCard";
 import Swiper from 'react-native-deck-swiper'
 
 class Verif extends React.Component {
@@ -12,7 +10,8 @@ class Verif extends React.Component {
             defis: [],
             loadedDefis: [],
             refreshing: false,
-            swiped: 0
+            swiped: 0,
+            defisListe: []
         }
     }
 
@@ -38,18 +37,7 @@ class Verif extends React.Component {
                         if (defi != undefined){
 
                             return (
-                                <View style={styles.card}>
-
-                                    <Video
-                                        shouldPlay
-                                        style={styles.video}
-                                        source={{
-                                        uri: "https://assos.utc.fr/integ/integ2021/api/"+defi.uri,
-                                        }}
-                                        resizeMode="contain"
-                                        isLooping
-                                    />
-                                </View>
+                                <DefiCard defi={defi} defisListe={this.state.defisListe}/>
                             )
                         }
                     }}
@@ -129,6 +117,14 @@ class Verif extends React.Component {
                 }
             })
         }
+
+        fetch('http://assos.utc.fr/integ/integ2021/api/get_defis.php')
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ defisListe: data });
+          console.log(JSON.stringify(data));
+        });
+
         
     }
 
@@ -156,25 +152,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#121212",
         flex: 1,
     },
-    card: {
-        width: "90%",
-        marginLeft: "5%",
-        height: "90%",
-        borderRadius: 4,
-        borderWidth: 1,
-        borderColor: "#E8E8E8",
-        justifyContent: "center",
-        backgroundColor: "#555",
-    },
+    
     text: {
         textAlign: "center",
         fontSize: 50,
         backgroundColor: "transparent",
         color: 'white'
     },
-    video: {
-        flex:1
-    }
+
 })
 
 export default Verif
