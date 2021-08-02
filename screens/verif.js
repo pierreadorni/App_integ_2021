@@ -39,7 +39,7 @@ class Verif extends React.Component {
                         if (defi != undefined){
 
                             return (
-                                <DefiCard defi={defi} defisListe={this.state.defisListe}/>
+                                <DefiCard navigation={this.props.navigation} defi={defi} defisListe={this.state.defisListe}/>
                             )
                         }
                     }}
@@ -159,6 +159,7 @@ class Verif extends React.Component {
 
 
     render(){
+        
         return(
             <ScrollView 
             refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}

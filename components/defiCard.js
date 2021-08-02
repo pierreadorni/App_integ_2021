@@ -1,15 +1,19 @@
 import React from "react";
 import { Video } from 'expo-av';
 import {View, StyleSheet, Text, TouchableWithoutFeedback} from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+
 class DefiCard extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             overlay: 1,
             defisListe: this.props.defisListe,
-            defiDesc: ""
+            defiDesc: "",
         }
     }
+
+    
 
     _setDefiDesc(defisListe){
         console.log('setting defi desc with defisListe length = '+defisListe.length);
@@ -62,9 +66,16 @@ class DefiCard extends React.Component{
         else{
             this._setDefiDesc(this.state.defisListe);
         }
+        this.props.navigation.addListener('didFocus', (route) => { 
+            console.log('willFocus');
+            console.log(route);
+        });
+
     }
 
     render(){
+        const { isFocused } = this.props;
+
         return(
             <TouchableWithoutFeedback
                 onPress={()=>{
@@ -75,7 +86,7 @@ class DefiCard extends React.Component{
                 
 
                 <Video
-                    shouldPlay
+                    shouldPlay = {isFocused ? true : false}
                     style={styles.video}
                     source={{
                     uri: "https://assos.utc.fr/integ/integ2021/api/"+this.props.defi.uri,
@@ -117,4 +128,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default DefiCard;
+export default function(props){
+    const isFocused = useIsFocused();
+
+    return <DefiCard navigation={props.navigation} defi={props.defi} defisListe={props.defisListe} isFocused={isFocused} />;
+}
