@@ -1,7 +1,9 @@
 import React from "react";
 import {View, Text, StyleSheet, RefreshControl, ScrollView} from 'react-native';
 import DefiCard from "../components/defiCard";
-import Swiper from 'react-native-deck-swiper'
+import Swiper from 'react-native-deck-swiper';
+import Toast from 'react-native-root-toast';
+
 
 class Verif extends React.Component {
     constructor(props){
@@ -66,11 +68,33 @@ class Verif extends React.Component {
                     }
                     onSwipedLeft={
                         (cardIndex)=>{
+                            
+                            Toast.show('Refusé', {
+                                duration: 1,
+                                position: Toast.positions.CENTER,
+                                shadow: true,
+                                animation: true,
+                                delay:0,
+                                hideOnPress: true,
+                                backgroundColor: "#f00",
+                                textColor:"#fff"
+                            });
                             this._setStatus(this.state.defis[cardIndex].id,0)
                         }
                     }
                     onSwipedRight={
                         (cardIndex)=>{
+                            
+                            Toast.show('Accepté', {
+                                duration: 1,
+                                position: Toast.positions.CENTER,
+                                shadow: true,
+                                animation: true,
+                                delay:0,
+                                hideOnPress: true,
+                                backgroundColor: "#0f0",
+                                textColor:"#fff"
+                            });
                             this._setStatus(this.state.defis[cardIndex].id,2)
                         }
                     }
