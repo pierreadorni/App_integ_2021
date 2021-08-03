@@ -10,6 +10,9 @@ import Toast from 'react-native-root-toast'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import NumberTextInput from 'rn-weblineindia-number-input';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
+
 
 const options = {
   title: 'Select Avatar',
@@ -26,6 +29,7 @@ class newUpload extends React.Component{
         this.state = {
             defi : undefined,
             image : undefined,
+            imageSize: 0,
             clan: 'kb',
             id: undefined,
             modalVisible: false,
@@ -58,18 +62,16 @@ class newUpload extends React.Component{
         };
     }
 
-    /*
-    useEffect(() => {
-        (async () => {
-          if (Platform.OS !== 'web') {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
-              alert('Sorry, we need camera roll permissions to make this work!');
-            }
-          }
-        })();
-      }, []);
-     */
+  getPermissionAsync = async () => {
+      if (Constants.platform.ios) {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status !== 'granted') {
+          alert('Vous devez accepter la permission pour poster une image');
+          return false
+        }
+      }
+      return true;
+  }
 
     _setModalVisible(v){
         this.setState({
@@ -118,13 +120,12 @@ class newUpload extends React.Component{
         uri: this.state.image.uri,
         type: 'video/mp4',
         name: 'video.mp4',
-        data: this.state.defi,
       });
 
       formData.append('data',JSON.stringify(this.state.defi));
 
       xhr.upload.addEventListener('progress',(event)=>{
-
+ 
         let defi = JSON.parse(JSON.stringify(this.state.defi));
         defi.uploadProgress = Math.round(event.loaded/event.total*100);
         this._saveDefi(defi)
@@ -148,7 +149,19 @@ class newUpload extends React.Component{
       xhr.send(formData);
     }
 
+    _sendBigImage(){
+      console.log('sendBigImage');
+
+      // FileSystem.getInfoAsync(pieces[0].fileName).then((infos)=>{
+      //   console.log(infos.size);
+      // })
+    }
+
     _pickImage = async () => {
+        let perm = await this.getPermissionAsync();
+        if (!perm){
+          return
+        }
         
         this.setState({
           loading: true
@@ -156,7 +169,7 @@ class newUpload extends React.Component{
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Videos,
           allowsEditing: true,
-          quality: 1,
+          quality: 0,
         });
         this.setState({
           loading: false
@@ -166,9 +179,9 @@ class newUpload extends React.Component{
 
         console.log(JSON.stringify(infos));
 
-        if (infos.size > 100000000){
-          console.log('too large');
-          Toast.show('Le fichier choisi est trop volumineux. taille max: 100Mo', {
+        /*if (infos.size > 50000000){
+          
+          Toast.show('Le fichier choisi est trop volumineux. taille max: 50Mo', {
             duration: Toast.durations.SHORT,
             position: Toast.positions.CENTER,
             shadow: true,
@@ -178,12 +191,15 @@ class newUpload extends React.Component{
             backgroundColor: "#fff",
             textColor:"#000"
           });
+          
         }
+        */
 
-        if (!result.cancelled && infos.size < 100000000) {
+        if (!result.cancelled) {
             console.log(JSON.stringify(result));
             this.setState({
-                image : result
+                image : result,
+                imageSize: infos.size
             })
             this._generateThumbnail(result['uri']);
         }
@@ -216,7 +232,12 @@ class newUpload extends React.Component{
             uploadProgress : 0
           }
         },()=>{
-          this._sendImage(()=>{});
+          if (this.state.imageSize < 50000000){
+            this._sendImage();
+          }else{
+            this._sendBigImage();
+          }
+          
           this._saveDefi(this.state.defi);
         });
 

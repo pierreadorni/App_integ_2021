@@ -13,11 +13,14 @@
     "@react-navigation/stack": "^5.14.5",
     "eas": "^0.1.0",
     "expo": "~41.0.1",
+    "expo-av": "~9.1.2",
     "expo-file-system": "~11.0.2",
     "expo-image-picker": "^10.1.4",
     "expo-status-bar": "~1.0.4",
     "expo-video-thumbnails": "^5.1.0",
     "firebase": "^8.7.0",
+    "fs": "^0.0.1-security",
+    "js-split-file": "^2.2.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
@@ -36,7 +39,7 @@
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
     "rn-weblineindia-number-input": "^1.0.1",
-    "expo-av": "~9.1.2"
+    "split-file": "^2.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
