@@ -151,10 +151,6 @@ class newUpload extends React.Component{
 
     _sendBigImage(){
       console.log('sendBigImage');
-
-      // FileSystem.getInfoAsync(pieces[0].fileName).then((infos)=>{
-      //   console.log(infos.size);
-      // })
     }
 
     _pickImage = async () => {
