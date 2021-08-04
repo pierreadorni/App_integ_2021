@@ -24,7 +24,7 @@ class ItemDefi extends React.Component{
           );
           this.setState({ image: uri });
         } catch (e) {
-          console.warn(e);
+        //   console.warn(e);
         }
     };
 
