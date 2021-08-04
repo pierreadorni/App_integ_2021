@@ -46,6 +46,7 @@ class ItemDefi extends React.Component{
         return(
             <View>
                 <AnimatedCircularProgress
+                style={{marginTop:20}}
                 size={50}
                 width={5}
                 fill={this.props.defi.uploadProgress}
