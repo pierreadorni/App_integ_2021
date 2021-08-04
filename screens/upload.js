@@ -152,7 +152,7 @@ class Home extends React.Component{
               <FlatList
                   refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
                   style={{width: '100%', height:'73%'}}
-                  data={this.state.displayedDefis}
+                  data={this.state.displayedDefis.reverse()}
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({item}) => <ItemDefi defi={item}/>}
                   onEndReached={({distanceFromEnd})=>{
