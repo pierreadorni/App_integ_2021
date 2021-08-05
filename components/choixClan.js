@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet,View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet,View, Image, TouchableOpacity, Text} from 'react-native';
 
 const styles = StyleSheet.create({
     container:{
@@ -31,20 +31,35 @@ const styles = StyleSheet.create({
 })
 
 const clans={
-    'kb':[require('../assets/kb.png'),require('../assets/kb-gris.png'),styles.clanLogoKb],
-    'vb':[require('../assets/vb.png'),require('../assets/vb-gris.png'),styles.clanLogoVb],
-    'tampi':[require('../assets/tampi.png'),require('../assets/tampi-gris.png'),styles.clanLogoTampi],
-    'youa':[require('../assets/youa.png'),require('../assets/youa-gris.png'),styles.clanLogoYoua]
+    'kb':[require('../assets/kb1.png'),require('../assets/kb1-gris.png'),styles.clanLogoKb],
+    'vb':[require('../assets/vb1.png'),require('../assets/vb1-gris.png'),styles.clanLogoVb],
+    'tampi':[require('../assets/tampi1.png'),require('../assets/tampi1-gris.png'),styles.clanLogoTampi],
+    'youa':[require('../assets/youa1.png'),require('../assets/youa1-gris.png'),styles.clanLogoYoua]
 }
 
-
+const clanNames={
+    'kb':['Klarf Binn','red'],
+    'vb':['Varelbor','green'],
+    'tampi':['Tampilaguul','yellow'],
+    'youa':['Youarille','blue']
+}
 
 class ChoixClan extends React.Component{
 
     _renderClan(c){
-        return(
-            <Image style={clans[c][2]} source={clans[c][(this.props.selected == c)?0:1]}/>
-        )
+        if (this.props.selected == c){
+            return(
+                <View>
+                    <Image style={clans[c][2]} source={clans[c][0]}/>
+                    <Text style={{textAlign:'center',color:clanNames[c][1], fontWeight:'bold'}}> {clanNames[c][0]} </Text>
+                </View>
+            )
+        }else{
+            return (
+                <Image style={clans[c][2]} source={clans[c][1]}/>
+            )
+        }
+
     }
 
     render(){

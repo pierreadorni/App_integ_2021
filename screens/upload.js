@@ -11,7 +11,9 @@ class Home extends React.Component{
         super(props);
         this.state={
           defis: [],
-          refreshing: false
+          refreshing: false,
+          displayedDefis: [],
+          displayedDefisIndex: 5
         }
     }
 
@@ -34,8 +36,10 @@ class Home extends React.Component{
           FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((content)=>{  
 
             if (content !== JSON.stringify(this.state.defis) && this._ismounted){
+              const defis = JSON.parse(content);
               this.setState({
-                defis: JSON.parse(content)
+                defis: defis,
+                displayedDefis: defis.slice(0, 10)
               })
             } 
           })
@@ -61,7 +65,7 @@ class Home extends React.Component{
       }
 
       if (!found){
-        defis.push(defi);
+        defis.unshift(defi);
       }
       await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
       DeviceEventEmitter.emit("event.DefisChanged", {});
@@ -148,9 +152,23 @@ class Home extends React.Component{
               <FlatList
                   refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
                   style={{width: '100%', height:'73%'}}
-                  data={this.state.defis}
+                  data={this.state.displayedDefis}
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({item}) => <ItemDefi defi={item}/>}
+                  onEndReached={({distanceFromEnd})=>{
+                    if (distanceFromEnd < 0) return;
+
+                    
+                    if (this.state.displayedDefisIndex < this.state.defis.length){
+                      this.setState({
+                        displayedDefis: this.state.defis.slice(0,this.state.displayedDefisIndex+10),
+                        displayedDefisIndex: this.state.displayedDefisIndex + 10
+                      })
+                      
+                    }
+
+                  }}
+                  onEndReachedThreshold={1}
               />
             </View>
             
