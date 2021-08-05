@@ -10,10 +10,6 @@ import Toast from 'react-native-root-toast'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import NumberTextInput from 'rn-weblineindia-number-input';
-import * as Permissions from 'expo-permissions';
-import Constants from 'expo-constants';
-import uuidv4 from 'uuid/v4';
-
 
 const options = {
   title: 'Select Avatar',
@@ -30,11 +26,29 @@ class newUpload extends React.Component{
         this.state = {
             defi : undefined,
             image : undefined,
-            imageSize: 0,
             clan: 'kb',
             id: undefined,
             modalVisible: false,
-            defisListe: [],
+            defisListe: [
+                'Porter une couche pendant une journée',
+                'Faire la livraison du Pic',
+                'Se prendre en photo avec le plus de chiens dans la rue',
+                'Offrir un bouquet de fleurs à des inconnus',
+                'Organiser un spectacle de marionette au parc Songeons',
+                'Monter les 6 étages de BF en montant 3 marches puis en descendant 1',
+                'Organiser un faux mariage sur la place de la mairie (1 par clan)',
+                'Faire un faux combat de pokémon (un nouvö joue le rôle du pokémon)',
+                "Organiser une course d'escargots",
+                'se balader aver un panneau "free hug" dans compiègne',
+                'proposer aux compiègnois de laver leur voiture',
+                "Demander des conseils pour une tetine dans une pharmacie et faire croire que c'est pour soi-même",
+                'Faire un remix de Roméo et Juilette dans le marché aux herbes',
+                "Chanter l'hymne national de l'Azerbaïdjan sur la place de la mairie",
+                'Faire un poème sur les mollets de la présidente et lui offir',
+                'Offrir une tranche de melon à la vice-prez',
+                'Aller à deux dans une bijouterie et faire une demande de fiancailles',
+                'Colorer/décolorer ses cheveux en la couleur de son clan',
+            ],
             defiChoisi: undefined,
             number: 1,
             loading: false,
@@ -44,16 +58,18 @@ class newUpload extends React.Component{
         };
     }
 
-  getPermissionAsync = async () => {
-      if (Constants.platform.ios) {
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        if (status !== 'granted') {
-          alert('Vous devez accepter la permission pour poster une image');
-          return false
-        }
-      }
-      return true;
-  }
+    /*
+    useEffect(() => {
+        (async () => {
+          if (Platform.OS !== 'web') {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+              alert('Sorry, we need camera roll permissions to make this work!');
+            }
+          }
+        })();
+      }, []);
+     */
 
     _setModalVisible(v){
         this.setState({
@@ -80,7 +96,7 @@ class newUpload extends React.Component{
         }
 
         if (!found){
-          defis.unshift(defi);
+          defis.push(defi);
         }
         await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
         DeviceEventEmitter.emit("event.DefisChanged", {});
@@ -93,7 +109,7 @@ class newUpload extends React.Component{
         return content
     }
 
-    _sendImage(){ 
+    _sendImage(){
 
       const xhr = new XMLHttpRequest();
       const formData = new FormData();
@@ -102,12 +118,13 @@ class newUpload extends React.Component{
         uri: this.state.image.uri,
         type: 'video/mp4',
         name: 'video.mp4',
+        data: this.state.defi,
       });
 
       formData.append('data',JSON.stringify(this.state.defi));
 
       xhr.upload.addEventListener('progress',(event)=>{
- 
+
         let defi = JSON.parse(JSON.stringify(this.state.defi));
         defi.uploadProgress = Math.round(event.loaded/event.total*100);
         this._saveDefi(defi)
@@ -120,13 +137,7 @@ class newUpload extends React.Component{
         let defi = JSON.parse(JSON.stringify(this.state.defi));
         defi.status = 1;
         defi.localId = defi.id;
-        try{
-          defi.id = parseInt(JSON.parse(xhr.response).data);
-        }catch(e){
-          console.warn(e);
-          console.log(xhr.response);
-        }
-        
+        defi.id = parseInt(JSON.parse(xhr.response).data);
         
         this._saveDefi(defi);
       })
@@ -135,150 +146,9 @@ class newUpload extends React.Component{
       xhr.setRequestHeader('Content-Type', 'multipart/form-data');
 
       xhr.send(formData);
-      this._saveDefi(this.state.defi);
-      this.props.navigation.navigate('Upload',{updateList:true});
-    }
-
-    _sendChunk(uri,index,nbParts, uploadID, chunkSize, totalSize){
-      return new Promise((resolve,reject)=>{
-        const xhr = new XMLHttpRequest();
-        const formData = new FormData();
-
-        const uploadData = {
-          uploadID:uploadID,
-          index:index,
-          nbParts:nbParts,
-          chunkSize: chunkSize,
-          totalSize: totalSize
-        }
-
-        formData.append('file',{
-          uri: uri,
-          type: 'video/mp4',
-          name: 'video.mp4',
-        });
-
-        formData.append('defiData',JSON.stringify(this.state.defi));
-        formData.append('uploadData',JSON.stringify(uploadData));
-
-        xhr.upload.addEventListener('progress',(event)=>{
-  
-          let defi = JSON.parse(JSON.stringify(this.state.defi));
-          let progress = (index * 1024*1024*10 + event.loaded) / totalSize
-          defi.uploadProgress = Math.round(progress*100);
-          this._saveDefi(defi)
-        });
-
-        xhr.addEventListener('load',()=>{
-          if (index == (nbParts-1)){
-            let defi = JSON.parse(JSON.stringify(this.state.defi));
-            defi.status = 1;
-            defi.localId = defi.id;
-            defi.id = parseInt(JSON.parse(xhr.response).data);
-            console.log('id '+defi.id+' received. Saving defi.');
-            this._saveDefi(defi);
-          }
-          resolve();
-
-        })
-
-        xhr.open('POST','https://assos.utc.fr/integ/integ2021/api/upload-video-chunk.php');
-        xhr.setRequestHeader('Content-Type', 'multipart/form-data');
-
-        xhr.send(formData);
-        this.props.navigation.navigate('Upload',{updateList:true});
-      })
-    }
-
-    _sendBigImage(){
-      const CHUNK_SIZE = 1024*1024*10;
-
-      // (1) Transform File to Blob 
-      fetch(this.state.image.uri).then( async (resp)=>{
-        this._saveDefi(this.state.defi);
-        this.props.navigation.navigate('Upload',{updateList:true});
-        const blob = await resp.blob();
-        const uriParts = this.state.image.uri.split('.');
-        const ext = uriParts[uriParts.length - 1];
-
-        // (2) Separate Blob into chunks
-
-        const nParts =  Math.ceil(blob.data.size/CHUNK_SIZE);
-        let blobs = [];
-        for(let i = 0; i < nParts; i++){
-          blobs.push(blob.slice(i*CHUNK_SIZE,Math.min((i+1)*CHUNK_SIZE, blob.data.size)));
-        }
-
-        console.log('sliced blob; size before slice: '+blob.data.size);
-        let total = 0;
-        blobs.forEach((blobChunk)=>{
-          console.log('blobChunk: '+blobChunk.data.size);
-          total += blobChunk.data.size;
-        })
-        console.log('End of blobChunks; Total number of chunks: ' + blobs.length + '; Total Size: '+total);
-        
-        // (3) Write Chunks to Temp directory
-
-        const uploadID = uuidv4();
-        console.log('uploadID: '+uploadID);
-        
-        
-        await FileSystem.makeDirectoryAsync(`${FileSystem.cacheDirectory}/${uploadID}`);
-        console.log(`directory created at ${FileSystem.cacheDirectory}/${uploadID}`);
-        
-
-        const fr = new FileReader();
-        for(let i=0; i < nParts; i++){
-          await new Promise((resolve,reject)=>{
-            fr.onload = async () => {
-              const fileUri = `${FileSystem.cacheDirectory}/${uploadID}/${i}.${ext}`;
-              console.log(`writing to ${fileUri}...`);
-              await FileSystem.writeAsStringAsync(fileUri, fr.result.split(',')[1],{ encoding: FileSystem.EncodingType.Base64 });
-              resolve(this);
-            };
-            fr.readAsDataURL(blobs[i]);
-          })
-          
-        }
-        console.log('All chunks written to Temp directory.');
-        
-        // (4) Send files from Temp directory
-
-        for(let i=0; i < nParts; i++){
-          const uri = `${FileSystem.cacheDirectory}/${uploadID}/${i}.${ext}`;
-          await this._sendChunk(uri,i,nParts,uploadID, blobs[i].data.size, blob.data.size);
-          console.log('chunk '+i+' sent, '+(nParts-i-1)+' remaining.');
-        }
-
-        console.log('all chunks uploaded. ');
-        
-
-        // (5) delete Temp directory
-        await FileSystem.deleteAsync(`${FileSystem.cacheDirectory}/${uploadID}`);
-        console.log('temp  files deleted.');
-
-
-        blob.close();
-      }).catch(e=>{
-        console.warn(e);
-        Toast.show('Impossible d\'envoyer le fichier. Il est probablement trop volumineux.', {
-          duration: Toast.durations.SHORT,
-          position: Toast.positions.CENTER,
-          shadow: true,
-          animation: true,
-          delay:0,
-          hideOnPress: true,
-          backgroundColor: "#fff",
-          textColor:"#000"
-        });
-      })
     }
 
     _pickImage = async () => {
-        let perm = await this.getPermissionAsync();
-        if (!perm){
-          return
-        }
         
         this.setState({
           loading: true
@@ -286,7 +156,7 @@ class newUpload extends React.Component{
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Videos,
           allowsEditing: true,
-          quality: 0,
+          quality: 1,
         });
         this.setState({
           loading: false
@@ -294,10 +164,11 @@ class newUpload extends React.Component{
 
         let infos = await FileSystem.getInfoAsync(result.uri);
 
+        console.log(JSON.stringify(infos));
 
-        /*if (infos.size > 50000000){
-          
-          Toast.show('Le fichier choisi est trop volumineux. taille max: 50Mo', {
+        if (infos.size > 100000000){
+          console.log('too large');
+          Toast.show('Le fichier choisi est trop volumineux. taille max: 100Mo', {
             duration: Toast.durations.SHORT,
             position: Toast.positions.CENTER,
             shadow: true,
@@ -307,15 +178,12 @@ class newUpload extends React.Component{
             backgroundColor: "#fff",
             textColor:"#000"
           });
-          
         }
-        */
 
-        if (!result.cancelled) {
-
+        if (!result.cancelled && infos.size < 100000000) {
+            console.log(JSON.stringify(result));
             this.setState({
-                image : result,
-                imageSize: infos.size
+                image : result
             })
             this._generateThumbnail(result['uri']);
         }
@@ -348,14 +216,15 @@ class newUpload extends React.Component{
             uploadProgress : 0
           }
         },()=>{
-          if (this.state.imageSize < 50000000){
-            console.log('sending small video');
-            this._sendImage();
-          }else{
-            console.log('sending big video');
-            this._sendBigImage();
-          }
+          this._sendImage(()=>{});
+          this._saveDefi(this.state.defi);
         });
+
+        
+        
+        this.props.navigation.navigate('Upload',{updateList:true});
+
+        
       }else{
         Toast.show('Il manque le défi ou la vidéo.', {
           duration: Toast.durations.SHORT,
