@@ -80,7 +80,7 @@ class newUpload extends React.Component{
         }
 
         if (!found){
-          defis.push(defi);
+          defis.unshift(defi);
         }
         await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
         DeviceEventEmitter.emit("event.DefisChanged", {});
@@ -120,7 +120,13 @@ class newUpload extends React.Component{
         let defi = JSON.parse(JSON.stringify(this.state.defi));
         defi.status = 1;
         defi.localId = defi.id;
-        defi.id = parseInt(JSON.parse(xhr.response).data);
+        try{
+          defi.id = parseInt(JSON.parse(xhr.response).data);
+        }catch(e){
+          console.warn(e);
+          console.log(xhr.response);
+        }
+        
         
         this._saveDefi(defi);
       })
@@ -180,7 +186,6 @@ class newUpload extends React.Component{
         xhr.setRequestHeader('Content-Type', 'multipart/form-data');
 
         xhr.send(formData);
-        this._saveDefi(this.state.defi);
         this.props.navigation.navigate('Upload',{updateList:true});
       })
     }
@@ -195,7 +200,6 @@ class newUpload extends React.Component{
         const blob = await resp.blob();
         const uriParts = this.state.image.uri.split('.');
         const ext = uriParts[uriParts.length - 1];
-        
 
         // (2) Separate Blob into chunks
 
@@ -221,6 +225,7 @@ class newUpload extends React.Component{
         
         await FileSystem.makeDirectoryAsync(`${FileSystem.cacheDirectory}/${uploadID}`);
         console.log(`directory created at ${FileSystem.cacheDirectory}/${uploadID}`);
+        
 
         const fr = new FileReader();
         for(let i=0; i < nParts; i++){
@@ -228,7 +233,7 @@ class newUpload extends React.Component{
             fr.onload = async () => {
               const fileUri = `${FileSystem.cacheDirectory}/${uploadID}/${i}.${ext}`;
               console.log(`writing to ${fileUri}...`);
-              await FileSystem.writeAsStringAsync(fileUri, fr.result.split(',')[1], { encoding: FileSystem.EncodingType.Base64 });
+              await FileSystem.writeAsStringAsync(fileUri, fr.result.split(',')[1],{ encoding: FileSystem.EncodingType.Base64 });
               resolve(this);
             };
             fr.readAsDataURL(blobs[i]);
@@ -251,6 +256,7 @@ class newUpload extends React.Component{
         // (5) delete Temp directory
         await FileSystem.deleteAsync(`${FileSystem.cacheDirectory}/${uploadID}`);
         console.log('temp  files deleted.');
+
 
         blob.close();
       }).catch(e=>{
@@ -350,12 +356,6 @@ class newUpload extends React.Component{
             this._sendBigImage();
           }
         });
-
-        
-        
-        
-
-        
       }else{
         Toast.show('Il manque le défi ou la vidéo.', {
           duration: Toast.durations.SHORT,

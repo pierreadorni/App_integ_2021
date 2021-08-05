@@ -65,7 +65,7 @@ class Home extends React.Component{
       }
 
       if (!found){
-        defis.push(defi);
+        defis.unshift(defi);
       }
       await FileSystem.writeAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json', JSON.stringify(defis));
       DeviceEventEmitter.emit("event.DefisChanged", {});
@@ -152,7 +152,7 @@ class Home extends React.Component{
               <FlatList
                   refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
                   style={{width: '100%', height:'73%'}}
-                  data={this.state.displayedDefis.reverse()}
+                  data={this.state.displayedDefis}
                   keyExtractor={(item) => item.id.toString()}
                   renderItem={({item}) => <ItemDefi defi={item}/>}
                   onEndReached={({distanceFromEnd})=>{
