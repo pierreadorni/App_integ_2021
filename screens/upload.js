@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, View, Text, RefreshControl,ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground} from "react-native";
+import {StyleSheet, View, Text, RefreshControl,ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground, SafeAreaView} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import ItemDefi from "../components/itemDefi";
@@ -88,6 +88,7 @@ class Home extends React.Component{
         }
       })
     }
+
     _totalPoints(){
       let total = 0;
       this.state.defis.forEach((defi)=>{
@@ -128,7 +129,7 @@ class Home extends React.Component{
     render(){
       //(JSON.stringify(this.state.defis));
         return (
-          <View style={styles.container}>
+          <SafeAreaView style={styles.container}>
             
               <ImageBackground source={{ uri: "http://assos.utc.fr/integ/integ2021/img/background2.jpg" }} resizeMode="cover" style={styles.header} imageStyle={{width:400}}>
                 <View style={styles.headerInside}>
@@ -175,7 +176,7 @@ class Home extends React.Component{
             <View style={styles.centeredContainer}>
                 <IconButton style={styles.plusButton} icon='plus-circle' color="#EA8BDE" size={50} onPress={() => {this._uploadScreen()}}/>
             </View>
-          </View>
+          </SafeAreaView>
         );
     }
 }

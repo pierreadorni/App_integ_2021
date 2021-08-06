@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from './screens/home';
 import UploadScreen from './screens/upload';
-import VerifScreen from './screens/verif';
+import SecurityScreen from './screens/security';
 import newUploadScreen from './screens/newUpload';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
@@ -35,9 +35,9 @@ const VerifStack = createStackNavigator();
 
 function VerifStackScreen() {
   return (
-    <UploadStack.Navigator options={{headerShown :false}}>
-        <UploadStack.Screen name="Verif" component={VerifScreen} options={{headerShown :false}}/>
-    </UploadStack.Navigator>
+    <VerifStack.Navigator options={{headerShown :false}}>
+        <VerifStack.Screen name="Verif" component={SecurityScreen} options={{headerShown :false}}/>
+    </VerifStack.Navigator>
   );
 }
 

@@ -5,6 +5,7 @@ import Swiper from 'react-native-deck-swiper';
 import Toast from 'react-native-root-toast';
 
 
+
 class Verif extends React.Component {
     constructor(props){
         super(props);
@@ -27,7 +28,7 @@ class Verif extends React.Component {
     async _setStatus(id, status){
         let response = await fetch('http://assos.utc.fr/integ/integ2021/api/set_status.php?id='+id+"&status="+status);
     }
-
+    
     _renderSwiper(){
     
         if(this.state.loadedDefis.length > 0){
@@ -124,7 +125,7 @@ class Verif extends React.Component {
 
 
     componentDidMount() {
-        
+
         for (let i=0;i<2;i++){
             this._getDefiFromServer().then((defi)=>{
                 

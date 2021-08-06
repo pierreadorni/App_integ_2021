@@ -9,7 +9,7 @@ class Home extends React.Component{
 
     state = {
       pageName: 'Journee',
-
+      
       events: [{
         img: "https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260",
         day: "30",
@@ -42,7 +42,7 @@ class Home extends React.Component{
 
     render(){
         return (
-          <View style={styles.screen}>
+          <SafeAreaView style={styles.screen}>
             <StatusBar barStyle="light-content"/>
             <ScrollView showsVerticalScrollIndicator={false}>
             <SafeAreaView>
@@ -133,7 +133,7 @@ class Home extends React.Component{
             </ScrollView>
             :
             null}
-          </View>
+          </SafeAreaView>
         );
     }
 }

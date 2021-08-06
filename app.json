@@ -40,7 +40,14 @@
       "userInterfaceStyle": "light"
     },
     "web": {
-      "favicon": "./assets/integ_logo.png"
+      "favicon": "./assets/integ_logo.png",
+      "build": {
+        "babel": {
+          "include": [
+            "rn-weblineindia-number-input"
+          ]
+        }
+      }
     }
     
   }
