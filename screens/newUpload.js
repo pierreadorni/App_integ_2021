@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image,TouchableOpacity, TouchableHighlight, Button, Modal, ActivityIndicator, FlatList, DeviceEventEmitter} from "react-native";
+import {StyleSheet, View, Text, Image,TouchableOpacity, TouchableHighlight, Button, Modal, ActivityIndicator, FlatList, DeviceEventEmitter, SafeAreaView} from "react-native";
 import { IconButton, Colors } from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
@@ -447,7 +447,7 @@ class newUpload extends React.Component{
 
     render(){
         return(
-            <View style={{alignItems: 'center',flexDirection:'column', flex:1, backgroundColor:"#121212", paddingTop: 120}}>
+            <SafeAreaView style={{alignItems: 'center',flexDirection:'column', flex:1, backgroundColor:"#121212", paddingTop: 120}}>
                 
                 {this._displayLoading()}
                 {/* MODAL DE CHOIX DE DEFI*/}
@@ -542,7 +542,7 @@ class newUpload extends React.Component{
                     <Text style={{ color:"white", fontSize:20, fontWeight:'bold', textTransform:"uppercase", marginLeft: 20}}> Envoyer </Text>
                 </TouchableOpacity>
 
-        </View>
+        </SafeAreaView>
 
         )
     }

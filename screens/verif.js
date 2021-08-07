@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, StyleSheet, RefreshControl, ScrollView} from 'react-native';
+import {Text, StyleSheet, RefreshControl, ScrollView, SafeAreaView} from 'react-native';
 import DefiCard from "../components/defiCard";
 import Swiper from 'react-native-deck-swiper';
 import Toast from 'react-native-root-toast';
@@ -110,9 +110,9 @@ class Verif extends React.Component {
             )
         }else{
             return(
-                <View style={{flex:1,alignItems:"center",justifyContent:'center'}}>
+                <SafeAreaView style={{flex:1,alignItems:"center",justifyContent:'center'}}>
                     <Text style={{color:"white"}}> Aucun défi à vérifier </Text>
-                </View>
+                </SafeAreaView>
                 
             )
         }
@@ -162,12 +162,15 @@ class Verif extends React.Component {
     render(){
         
         return(
-            <ScrollView 
-            refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
-            contentContainerStyle={styles.body}
-            >
-                {this._renderSwiper()}
-            </ScrollView>
+            <SafeAreaView>
+                <ScrollView 
+                refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
+                contentContainerStyle={styles.body}
+                >
+                    {this._renderSwiper()}
+                </ScrollView>
+            </SafeAreaView>
+
         );
     }
 }

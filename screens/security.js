@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {SafeAreaView, ActivityIndicator} from 'react-native';
 import Verif from './verif';
 import Auth from './auth';
 import Constants from 'expo-constants';
@@ -65,9 +65,9 @@ class SecurityScreen extends React.Component {
             return (<Auth/>)
         }else{
             return (
-                <View style={{backgroundColor: "#121212", flex:1 ,alignItems:"center", justifyContent:"center" }}>
+                <SafeAreaView style={{backgroundColor: "#121212", flex:1 ,alignItems:"center", justifyContent:"center" }}>
                     <ActivityIndicator size="large" color="#EB62BC" />
-                </View>
+                </SafeAreaView>
             )
         }
         
