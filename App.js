@@ -15,7 +15,7 @@ const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} options={{headerShown :false}}/>
+      <HomeStack.Screen name="Planning" component={HomeScreen} options={{headerShown :false}}/>
     </HomeStack.Navigator>
   );
 }
@@ -52,8 +52,8 @@ export default function App() {
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
 
-              if (route.name === 'Home') {
-                iconName = focused ? 'ios-information-circle' : 'ios-information-circle-outline';
+              if (route.name === 'Planning') {
+                iconName = focused ? 'ios-calendar' : 'ios-calendar-outline';
               } else if (route.name === 'Upload') {
                 iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
               } else if (route.name == "Verif") {
@@ -75,7 +75,7 @@ export default function App() {
             }
           }}
         >
-          <Tab.Screen name="Home" component={HomeStackScreen} />
+          <Tab.Screen name="Planning" component={HomeStackScreen} />
           <Tab.Screen name="Upload" component={UploadStackScreen} />
           <Tab.Screen name="Verif" component={VerifStackScreen} />
         </Tab.Navigator>
