@@ -81,6 +81,7 @@ class Home extends React.Component{
           let response = await fetch('http://assos.utc.fr/integ/integ2021/api/check_status.php?id='+defi.id);
           let data = await response.json();
           let status = parseInt(data['data'])
+          console.log('status received for id='+defi.id+': '+status);
           if (status != defi.status){
             defi.status = status;
             this._saveDefi(defi);

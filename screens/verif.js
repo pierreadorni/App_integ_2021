@@ -3,6 +3,8 @@ import {Text, StyleSheet, RefreshControl, ScrollView, SafeAreaView} from 'react-
 import DefiCard from "../components/defiCard";
 import Swiper from 'react-native-deck-swiper';
 import Toast from 'react-native-root-toast';
+import {sha256} from 'js-sha256';
+import * as FileSystem from 'expo-file-system';
 
 
 
@@ -25,8 +27,28 @@ class Verif extends React.Component {
         return data
     }
 
+    async _getDeviceId(){
+        const path = FileSystem.documentDirectory+'deviceId.json';
+        const infos = await FileSystem.getInfoAsync(path);
+        if (infos['exists']){
+            const deviceID = JSON.parse(await FileSystem.readAsStringAsync(path));
+            return deviceID;
+        }else{
+            const deviceID = Constants.sessionId;
+            await FileSystem.writeAsStringAsync(path,JSON.stringify(deviceID));
+            return deviceID;
+        }   
+    }
+    hash(str){
+        let hash = sha256.create();
+        hash.update(str);
+        return hash.hex();
+    }
+
     async _setStatus(id, status){
-        let response = await fetch('http://assos.utc.fr/integ/integ2021/api/set_status.php?id='+id+"&status="+status);
+        let deviceID = await this._getDeviceId();
+        deviceID = this.hash(deviceID);
+        await fetch('http://assos.utc.fr/integ/integ2021/api/set_status.php?id='+id+"&status="+status+"&token="+deviceID);
     }
     
     _renderSwiper(){
@@ -162,7 +184,7 @@ class Verif extends React.Component {
     render(){
         
         return(
-            <SafeAreaView>
+            <SafeAreaView style={styles.container}>
                 <ScrollView 
                 refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
                 contentContainerStyle={styles.body}
@@ -176,6 +198,9 @@ class Verif extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    container:{
+        flex:1
+    },
     body:{
         backgroundColor: "#121212",
         flex: 1,

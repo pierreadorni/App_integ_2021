@@ -60,7 +60,7 @@ class SecurityScreen extends React.Component {
 
     render(){
         if (this.state.authenticated == 2){
-            return (<Verif/>);
+            return (<Verif navigation={this.props.navigation} />);
         }else if (this.state.authenticated == 0){
             return (<Auth/>)
         }else{

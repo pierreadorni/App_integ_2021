@@ -8,7 +8,7 @@ class Defi extends React.Component {
                 <TouchableOpacity style={styles.container} onPress={this.props.func}>
                     <Text style={styles.text}> {this.props.desc} </Text>
                 </TouchableOpacity>
-                <View style={styles.separator}></View>
+                {/*<View style={styles.separator}></View>*/}
             </View>
         )
     }
@@ -18,13 +18,17 @@ const styles = StyleSheet.create({
     container:{
         width:'90%',
         paddingLeft:'10%',
-        height:50,
-        //backgroundColor: 'rgb(200,200,200)',
+
+        
         justifyContent:'center',
     },
     text:{
         textAlign:'center',
-        color:'white'
+        color:'white',
+        marginTop:20,
+        fontSize: 16,
+        fontWeight:'normal',
+        fontStyle:'italic'
     },
     separator:{
         height: 1,
@@ -32,7 +36,7 @@ const styles = StyleSheet.create({
         marginLeft:'5%',
         marginTop:10,
         marginBottom:10,
-        backgroundColor: 'rgba(255,255,255,1)',
+        backgroundColor: 'rgba(255,255,255,0.3)',
     }
 })
 
