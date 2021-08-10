@@ -282,7 +282,7 @@ class Home extends React.Component {
                 <View style={{width:'100%',justifyContent:'center'}}>
                   <Text style={{color:'white', textDecorationLine:'underline', textAlign:'center'}}>Après Midi</Text>
 
-                  <Table borderStyle={{ borderWidth: 0, borderColor:"#EA8BDE" }} style={{marginTop:20}}>
+                  <Table borderStyle={{ borderWidth: 0, borderColor:"#EA8BDE" }} style={{marginVertical:20}}>
                     <Row
                       data={["Boisson","Prix"]}
                       flexArr={[2, 1]}
