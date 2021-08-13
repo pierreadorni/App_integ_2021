@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Text, View } from 'react-native';
+import { Button, Text, View, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -42,6 +42,7 @@ function VerifStackScreen() {
   );
 }
 
+const tabBarIconGap = Platform.OS == 'ios' ? 0 : -15
 
 const Tab = createBottomTabNavigator();
 
@@ -75,7 +76,7 @@ export default function App() {
               backgroundColor:"#2C2C2C"
             },
             labelStyle:{
-              transform: [{translateY: -15}]
+              transform: [{translateY: tabBarIconGap}]
             }
           }}
         >
