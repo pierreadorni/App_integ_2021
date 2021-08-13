@@ -8,6 +8,7 @@ import HomeScreen from './screens/home';
 import UploadScreen from './screens/upload';
 import SecurityScreen from './screens/security';
 import newUploadScreen from './screens/newUpload';
+import PointsScreen from './screens/points';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 const HomeStack = createStackNavigator();
@@ -41,6 +42,7 @@ function VerifStackScreen() {
   );
 }
 
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -58,6 +60,8 @@ export default function App() {
                 iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
               } else if (route.name == "Verif") {
                 iconName = focused ? "checkmark-circle" : "checkmark-circle-outline";
+              } else if (route.name == "Points"){
+                iconName = focused ? "podium": "podium-outline";
               }
 
               return <Ionicons name={iconName} size={size} color={color} style={{backgroundColor: "#2C2C2C"}}/>;
@@ -75,9 +79,12 @@ export default function App() {
             }
           }}
         >
+          
           <Tab.Screen name="Planning" component={HomeStackScreen} />
+          <Tab.Screen name="Points" component={PointsScreen}/>
           <Tab.Screen name="Upload" component={UploadStackScreen} />
           <Tab.Screen name="Verif" component={VerifStackScreen} />
+          
         </Tab.Navigator>
     </NavigationContainer>
     </RootSiblingParent>
