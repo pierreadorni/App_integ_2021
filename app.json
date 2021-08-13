@@ -36,8 +36,12 @@
         "foregroundImage": "./assets/integ_logo.png",
         "backgroundColor": "#121212"
       },
-
-      "userInterfaceStyle": "light"
+      "userInterfaceStyle": "light",
+      "config":{
+        "googleMaps":{
+          "apiKey":"AIzaSyCu-R7_2FWTKO7O4s_EMojRpbfm-0dXK8E"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/integ_logo.png",
