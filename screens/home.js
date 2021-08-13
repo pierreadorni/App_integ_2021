@@ -19,7 +19,7 @@ import {
 } from "react-native-responsive-screen";
 import { LinearGradient } from "expo-linear-gradient";
 import MapView from "react-native-maps";
-import { Marker, Callout } from "react-native-maps";
+import { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Linking from "expo-linking";
 import {
   Table,
@@ -216,6 +216,7 @@ class Home extends React.Component {
 
             <Text style={styles.about}>Carte des chantiers</Text>
             <MapView
+              provider={PROVIDER_GOOGLE}
               userInterfaceStyle="dark"
               initialRegion={{
                 latitude: this.state.events[this.state.zoom].latitude,
@@ -309,6 +310,7 @@ class Home extends React.Component {
 
             <Text style={styles.about}>Carte</Text>
             <MapView
+              provider={PROVIDER_GOOGLE}
               userInterfaceStyle="dark"
               initialRegion={{
                 latitude: this.state.events[this.state.zoom].latitude,
@@ -620,6 +622,7 @@ class Home extends React.Component {
 
                 <Text style={styles.about}>Carte</Text>
                 <MapView
+                  provider={PROVIDER_GOOGLE}
                   userInterfaceStyle="dark"
                   initialRegion={{
                     latitude: this.state.events[this.state.zoom].latitude,

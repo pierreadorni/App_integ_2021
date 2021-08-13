@@ -27,6 +27,10 @@
       "userInterfaceStyle": "light",
       "infoPlist": {
         "UIUserInterfaceStyle": "Light"
+      },
+      "bundleIdentifier":"fr.utc.integration",
+      "config":{
+        "googleMapsApiKey":"AIzaSyA14bGsS6VDXB63_0XJX1SG2lJyb9OsNZw"
       }
     },
     "android": {
