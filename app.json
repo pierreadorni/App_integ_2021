@@ -38,8 +38,9 @@
       "versionCode":1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/integ_logo.png",
-        "backgroundColor": "#121212"
+        "backgroundColor": "#fff"
       },
+      "icon":"./assets/integ_logo_ios.png",
       "userInterfaceStyle": "light",
       "config":{
         "googleMaps":{
