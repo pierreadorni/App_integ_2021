@@ -65,6 +65,12 @@ class PointsBars extends React.Component{
             displayedPoints:this.getHeights(this.props.points)
         })  
     }
+    componentWillReceiveProps(nextProps){
+        console.log(this.getHeights(nextProps.points))
+        this.setState({
+            displayedPoints:this.getHeights(nextProps.points)
+        })  
+    }
 
     render() {
         return(

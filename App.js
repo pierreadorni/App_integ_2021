@@ -9,6 +9,7 @@ import UploadScreen from './screens/upload';
 import SecurityScreen from './screens/security';
 import newUploadScreen from './screens/newUpload';
 import PointsScreen from './screens/points';
+import InfosScreen from './screens/infos';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 const HomeStack = createStackNavigator();
@@ -42,6 +43,16 @@ function VerifStackScreen() {
   );
 }
 
+const InfosStack = createStackNavigator();
+
+function InfosStackScreen(){
+  return(
+    <InfosStack.Navigator options={{headerShown: false}}>
+      <InfosStack.Screen name="Infos" component={InfosScreen} options={{headerShown: false}}/>
+    </InfosStack.Navigator>
+  );
+}
+
 const tabBarIconGap = Platform.OS == 'ios' ? 0 : -15
 
 const Tab = createBottomTabNavigator();
@@ -51,6 +62,7 @@ export default function App() {
     <RootSiblingParent>
       <NavigationContainer>
         <Tab.Navigator
+          initialRouteName='Points'
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
@@ -63,10 +75,12 @@ export default function App() {
                 iconName = focused ? "checkmark-circle" : "checkmark-circle-outline";
               } else if (route.name == "Points"){
                 iconName = focused ? "podium": "podium-outline";
+              } else if (route.name == 'Infos'){
+                iconName = focused ? "information-circle": "information-circle-outline";
               }
 
               return <Ionicons name={iconName} size={size} color={color} style={{backgroundColor: "#2C2C2C"}}/>;
-            },
+            }
           })}
           tabBarOptions={{
             activeTintColor: '#EA8BDE',
@@ -77,10 +91,12 @@ export default function App() {
             },
             labelStyle:{
               transform: [{translateY: tabBarIconGap}]
-            }
+            },
+            
+            
           }}
         >
-          
+          <Tab.Screen name="Infos" component={InfosStackScreen} />
           <Tab.Screen name="Planning" component={HomeStackScreen} />
           <Tab.Screen name="Points" component={PointsScreen}/>
           <Tab.Screen name="Upload" component={UploadStackScreen} />

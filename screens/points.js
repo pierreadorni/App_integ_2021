@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions, SafeAreaView, Text, ActivityIndicator,} from 'react-native';
+import {View, StyleSheet, Dimensions, SafeAreaView, Text, ActivityIndicator, ScrollView, RefreshControl} from 'react-native';
 import PointsBars from '../components/pointsBars';
 
 
@@ -10,7 +10,8 @@ import PointsBars from '../components/pointsBars';
 class PointsScreen extends React.Component{
     state = {
         points: {},
-        ranking : ['kb','vb','tampi','youa']
+        ranking : ['kb','vb','tampi','youa'],
+        refreshing: false
     }
 
     colors={
@@ -49,6 +50,14 @@ class PointsScreen extends React.Component{
         let points = await fetch('https://assos.utc.fr/integ/integ2021/api/get_points.php');
         points = await points.json();
         this.setState({points});
+    }
+
+    onRefresh(){
+        this.setState({refreshing:true}, ()=>{
+            this._getPoints().then(()=>{
+                this.setState({refreshing:false})
+            })
+        })
     }
 
     _renderRanking(rank){
@@ -114,15 +123,17 @@ class PointsScreen extends React.Component{
     render(){
         return(
             <SafeAreaView style={{backgroundColor: "#121212", flex:1}}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.headerText}> Podium </Text>
-                </View>
-                <View style={styles.podiumContainer}>
-                    {this._renderPodium()}
-                </View>
-                <View style={styles.pointsContainer}>
-                    {this._renderPointsBars()}
-                </View>
+                <ScrollView refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerText}> Podium </Text>
+                    </View>
+                    <View style={styles.podiumContainer}>
+                        {this._renderPodium()}
+                    </View>
+                    <View style={styles.pointsContainer} >
+                        {this._renderPointsBars()}
+                    </View>
+                </ScrollView>
             </SafeAreaView>
         )
     }
@@ -151,7 +162,8 @@ const styles = StyleSheet.create({
     },
     pointsContainer:{
         backgroundColor:"#121212",
-         flex:5
+        flex: 5,
+        marginTop: Dimensions.get("window").height*0.4 
     } 
 
 });
