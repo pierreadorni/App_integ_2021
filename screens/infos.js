@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems:'center',
         justifyContent:'center',
-        backgroundColor:"#EA8BDE",
+        backgroundColor:"#121212",
         overflow:"hidden",
         minHeight:150
     },

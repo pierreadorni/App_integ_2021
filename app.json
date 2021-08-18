@@ -2,7 +2,7 @@
   "expo": {
     "name": "Intégration UTC",
     "slug": "App_integ_2021",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/integ_logo.png",
     "userInterfaceStyle":"light",
@@ -23,6 +23,7 @@
       "**/*"
     ],
     "ios": {
+      "icon":"./assets/integ_logo_ios.png",
       "supportsTablet": true,
       "userInterfaceStyle": "light",
       "infoPlist": {

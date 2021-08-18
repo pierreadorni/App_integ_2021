@@ -123,7 +123,7 @@ class PointsScreen extends React.Component{
     render(){
         return(
             <SafeAreaView style={{backgroundColor: "#121212", flex:1}}>
-                <ScrollView refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}>
+                <ScrollView style={{flex:1}} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}>
                     <View style={styles.headerContainer}>
                         <Text style={styles.headerText}> Podium </Text>
                     </View>
@@ -163,7 +163,8 @@ const styles = StyleSheet.create({
     pointsContainer:{
         backgroundColor:"#121212",
         flex: 5,
-        marginTop: Dimensions.get("window").height*0.4 
+        position:"relative",
+        top:0
     } 
 
 });

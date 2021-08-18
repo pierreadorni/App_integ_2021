@@ -665,12 +665,12 @@ class Home extends React.Component {
             <SafeAreaView>
               <View style={styles.header}>
                 <Text style={styles.appName}>Journées</Text>
-                <TouchableOpacity style={styles.notVisibleTouchable}>
+                {/* <TouchableOpacity style={styles.notVisibleTouchable}>
                   <Image
                     source={require("../assets/search.png")}
                     style={styles.search}
                   />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </SafeAreaView>
           }

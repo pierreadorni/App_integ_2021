@@ -1,6 +1,6 @@
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import React from 'react';
-import {View, StyleSheet, Text, Animated} from 'react-native';
+import {View, StyleSheet, Text, Animated, Dimensions, Image} from 'react-native';
 import {BoxShadow} from 'react-native-shadow'
 
 /*
@@ -65,27 +65,29 @@ class PointsBars extends React.Component{
             displayedPoints:this.getHeights(this.props.points)
         })  
     }
-    componentWillReceiveProps(nextProps){
-        console.log(this.getHeights(nextProps.points))
-        this.setState({
-            displayedPoints:this.getHeights(nextProps.points)
-        })  
+    componentDidUpdate(nextProps){
+        if (nextProps != this.props){
+            this.setState({
+                displayedPoints:this.getHeights(nextProps.points)
+            })  
+        }
     }
 
     render() {
         return(
             <View style={styles.container}>
-                <View>
+                <View style={{alignItems:'center'}}>
+                    <Image source={require("../assets/kb1.png")} style={{height:50,width:50}}></Image>
                     <Text style={{color:this.colors['kb'], textAlign:'center', marginBottom: 20, fontSize:16, fontWeight:'bold'}}>{this.props.points['kb']}</Text>
                     <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['kb'],20), color:this.colors['kb'], border:20,radius:10,opacity:0.5,x:0,y:0,style:{marginHorizontal:20}}}>
-                        
                         <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['kb'],20), color:'#fff', border:0,radius:10,opacity:0.8,x:0,y:0,}}>
                             <View style={[styles.bar, {borderColor:this.colors['kb'],height:Math.max(this.state.displayedPoints['kb'],20)}]} ></View>
                         </BoxShadow>
                     </BoxShadow>
                 </View>
 
-                <View>
+                <View style={{alignItems:'center'}}>
+                    <Image source={require("../assets/vb1.png")} style={{height:50,width:50}}></Image> 
                     <Text style={{color:this.colors['vb'], textAlign:'center', marginBottom: 20, fontSize:16, fontWeight:'bold'}}>{this.props.points['vb']}</Text>
                     <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['vb'],20), color:this.colors['vb'], border:20,radius:10,opacity:0.5,x:0,y:0,style:{marginHorizontal:20}}}>
                         <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['vb'],20), color:'#fff', border:0,radius:10,opacity:0.8,x:0,y:0,}}>
@@ -94,7 +96,8 @@ class PointsBars extends React.Component{
                     </BoxShadow>
                 </View>
 
-                <View>
+                <View style={{alignItems:'center'}}>
+                    <Image source={require("../assets/tampi1.png")} style={{height:50,width:50}}></Image>
                     <Text style={{color:this.colors['tampi'], textAlign:'center', marginBottom: 20, fontSize:16, fontWeight:'bold'}}>{this.props.points['tampi']}</Text>
                     <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['tampi'],20), color:this.colors['tampi'], border:20,radius:10,opacity:0.5,x:0,y:0,style:{marginHorizontal:20}}}>
                         <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['tampi'],20), color:'#fff', border:0,radius:10,opacity:0.8,x:0,y:0,}}>
@@ -104,7 +107,8 @@ class PointsBars extends React.Component{
                 </View>
 
 
-                <View>
+                <View style={{alignItems:'center'}}>
+                    <Image source={require("../assets/youa1.png")} style={{height:50,width:50}}></Image>
                     <Text style={{color:this.colors['youa'], textAlign:'center', marginBottom: 20, fontSize:16, fontWeight:'bold'}}>{this.props.points['youa']}</Text>
                     <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['youa'],20), color:this.colors['youa'], border:20,radius:10,opacity:0.5,x:0,y:0,style:{marginHorizontal:20}}}>
                         <BoxShadow setting={{width:20, height:Math.max(this.state.displayedPoints['youa'],20), color:'#fff', border:0,radius:10,opacity:0.8,x:0,y:0,}}>
@@ -127,7 +131,8 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         flexDirection:'row',
         paddingBottom:50,
-        paddingHorizontal: "10%"
+        paddingHorizontal: "10%",
+        height: Dimensions.get("window").height*0.6
     },
     bar:{
         width:20,
