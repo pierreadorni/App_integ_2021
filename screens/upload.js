@@ -1,6 +1,16 @@
 import React from "react";
-import {StyleSheet, View, Text, RefreshControl,ActivityIndicator, ScrollView, Image, FlatList, DeviceEventEmitter, ImageBackground, SafeAreaView} from "react-native";
-import { IconButton, Colors } from 'react-native-paper';
+import {
+  DeviceEventEmitter,
+  FlatList,
+  ImageBackground,
+  RefreshControl,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
+import {IconButton} from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import ItemDefi from "../components/itemDefi";
 
@@ -24,15 +34,14 @@ class Home extends React.Component{
 
     async _readDefisAsync(){
       let res = await FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json');
-      if (res['exists'] == false){return 0;}
-      let content = await FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json');
-      return content
+      if (res['exists'] === false){return 0;}
+      return await FileSystem.readAsStringAsync(FileSystem.documentDirectory + 'defis_envoyes.json')
     }
 
     _readDefis(){
 
       FileSystem.getInfoAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((res)=>{
-          if (res['exists'] == false){return 0;}
+          if (res['exists'] === false){return 0;}
           FileSystem.readAsStringAsync(FileSystem.documentDirectory+'defis_envoyes.json').then((content)=>{  
 
             if (content !== JSON.stringify(this.state.defis) && this._ismounted){
@@ -58,7 +67,7 @@ class Home extends React.Component{
       let found = 0;
 
       for(let i=0;i<defis.length;i++){
-        if (defis[i].id == defi.id || defis[i].id == defi.localId){
+        if (defis[i].id === defi.id || defis[i].id === defi.localId){
           found = 1;
           defis[i] = defi;
         }
@@ -77,12 +86,12 @@ class Home extends React.Component{
 
     async _checkStatus(){
       this.state.defis.forEach(async (defi)=>{
-        if (defi.status == 1){
+        if (defi.status === 1){
           let response = await fetch('http://assos.utc.fr/integ/integ2021/api/check_status.php?id='+defi.id);
           let data = await response.json();
           let status = parseInt(data['data'])
           console.log('status received for id='+defi.id+': '+status);
-          if (status != defi.status){
+          if (status !== defi.status){
             defi.status = status;
             this._saveDefi(defi);
           }
@@ -94,7 +103,7 @@ class Home extends React.Component{
       let total = 0;
       this.state.defis.forEach((defi)=>{
 
-        if (defi.status==2){
+        if (defi.status===2){
           total += defi.defi.points * defi.nb;
         }
       })
@@ -131,7 +140,7 @@ class Home extends React.Component{
       //(JSON.stringify(this.state.defis));
         return (
           <SafeAreaView style={styles.container}>
-            
+              <StatusBar barStyle="light-content" />
               <ImageBackground source={{ uri: "http://assos.utc.fr/integ/integ2021/img/background2.jpg" }} resizeMode="cover" style={styles.header} imageStyle={{width:400}}>
                 <View style={styles.headerInside}>
                   <View style={styles.headerNumberContainer}>
@@ -139,7 +148,7 @@ class Home extends React.Component{
                     <Text style={styles.headerText}>Points Gagnés</Text>
                   </View>
                   <View style={styles.headerMiddle}>
-                    <View style={{backgroundColor:'#ffffff', height:100,width:2,marginTop:10}}></View>
+                    <View style={{backgroundColor: '#ffffff', height: 100, width: 2, marginTop: 10}}/>
                   </View>
                   <View style={styles.headerNumberContainer}>
                     <Text style={styles.headerNumber}>{this._nDefis()}</Text>

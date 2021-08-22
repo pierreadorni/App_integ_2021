@@ -1,7 +1,6 @@
 import React from 'react';
-import {SafeAreaView,Text, StyleSheet, TouchableOpacity, Modal, View} from 'react-native';
-import { IconButton, Colors } from 'react-native-paper';
-import axios from 'axios';
+import {Modal, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Colors, IconButton} from 'react-native-paper';
 import * as FileSystem from 'expo-file-system';
 import {sha256} from 'js-sha256';
 
@@ -31,8 +30,7 @@ class Auth extends React.Component{
         const path = FileSystem.documentDirectory+'deviceId.json';
         const infos = await FileSystem.getInfoAsync(path);
         if (infos['exists']){
-            const deviceID = JSON.parse(await FileSystem.readAsStringAsync(path));
-            return deviceID;
+            return JSON.parse(await FileSystem.readAsStringAsync(path));
         }else{
             const deviceID = Constants.sessionId;
             await FileSystem.writeAsStringAsync(path,JSON.stringify(deviceID));
@@ -114,6 +112,7 @@ class Auth extends React.Component{
     render(){
         return(
             <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="light-content" />
                 {this._displayModal()}
                 <Text style={{color:'white', fontSize: 20, width: "80%", textAlign: "center", marginBottom:'20%'}}> Cette section est réservée aux membres du BDI.</Text>
                 <TouchableOpacity onPress={()=>{this._askForAccess()}}>
@@ -135,7 +134,6 @@ const styles = StyleSheet.create({
         width: '70%',
         height: '30%',
         marginBottom:80,
-        backgroundColor:"#fff",
         borderRadius:5,
         backgroundColor:"#2C2C2C",
     },

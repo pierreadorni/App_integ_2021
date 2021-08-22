@@ -1,5 +1,18 @@
 import React from 'react';
-import {View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Linking, SafeAreaView, Dimensions, Modal, Image, ScrollView} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    ActivityIndicator,
+    TouchableOpacity,
+    Linking,
+    SafeAreaView,
+    Dimensions,
+    Modal,
+    Image,
+    ScrollView,
+    StatusBar
+} from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { IconButton, Colors } from "react-native-paper";
 
@@ -42,6 +55,7 @@ class InfosScreen extends React.Component{
     render(){
         return(
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" />
             <ScrollView>
                 <Modal
                     animationType="slide"

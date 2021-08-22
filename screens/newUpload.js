@@ -7,7 +7,7 @@ import {
   Image,
   Modal,
   Platform,
-  SafeAreaView,
+  SafeAreaView, StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -510,6 +510,7 @@ class newUpload extends React.Component {
           paddingTop: 120,
         }}
       >
+        <StatusBar barStyle="light-content" />
         {this._displayLoading()}
         {/* MODAL DE CHOIX DE DEFI*/}
         <Modal

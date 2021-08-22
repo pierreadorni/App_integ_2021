@@ -1,5 +1,5 @@
 import React from "react";
-import {AppState, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text} from 'react-native';
+import {AppState, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text} from 'react-native';
 import DefiCard from "../components/defiCard";
 import Swiper from 'react-native-deck-swiper';
 import Toast from 'react-native-root-toast';
@@ -196,6 +196,7 @@ class Verif extends React.Component {
     render(){
         return(
             <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="light-content" />
                 <ScrollView 
                 refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
                 contentContainerStyle={styles.body}

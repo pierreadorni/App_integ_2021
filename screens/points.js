@@ -1,5 +1,15 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions, SafeAreaView, Text, ActivityIndicator, ScrollView, RefreshControl} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Dimensions,
+    SafeAreaView,
+    Text,
+    ActivityIndicator,
+    ScrollView,
+    RefreshControl,
+    StatusBar
+} from 'react-native';
 import PointsBars from '../components/pointsBars';
 
 
@@ -41,7 +51,7 @@ class PointsScreen extends React.Component{
                 }
             })
             ranking.push(maxKey);
-            arr = arr.filter((value)=>value!=maxKey);
+            arr = arr.filter((value)=>value!==maxKey);
         }
         return ranking;
     }
@@ -123,6 +133,7 @@ class PointsScreen extends React.Component{
     render(){
         return(
             <SafeAreaView style={{backgroundColor: "#121212", flex:1}}>
+                <StatusBar barStyle="light-content" />
                 <ScrollView style={{flex:1}} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}>
                     <View style={styles.headerContainer}>
                         <Text style={styles.headerText}> Podium </Text>
