@@ -29,7 +29,7 @@
       "infoPlist": {
         "UIUserInterfaceStyle": "Light"
       },
-      "bundleIdentifier":"fr.utc.integration",
+      "bundleIdentifier":"com.utcintegration.integration2020",
       "config":{
         "googleMapsApiKey":"AIzaSyA14bGsS6VDXB63_0XJX1SG2lJyb9OsNZw"
       }
@@ -39,7 +39,7 @@
       "versionCode":1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/integ_logo.png",
-        "backgroundColor": "#fff"
+        "backgroundColor": "#ffffff"
       },
       "icon":"./assets/integ_logo_ios.png",
       "userInterfaceStyle": "light",

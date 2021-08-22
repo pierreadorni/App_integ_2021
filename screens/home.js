@@ -11,7 +11,7 @@ import {
   StatusBar,
   ImageBackground,
   ScrollView,
-  Dimensions,
+  Dimensions, Platform,
 } from "react-native";
 import {
   heightPercentageToDP as hp,
@@ -26,8 +26,9 @@ import {
   TableWrapper,
   Row,
   Rows,
-  Col,
 } from "react-native-table-component";
+
+const iphoneX = Platform.OS === 'ios' && Dimensions.get("window").height > 810;
 
 class Home extends React.Component {
   state = {
@@ -78,7 +79,7 @@ class Home extends React.Component {
   _createTUCMarker(remainingMarkers) {
     const marker = remainingMarkers.pop();
     console.log(marker.latitude, marker.longitude);
-    if (remainingMarkers.length == 0) {
+    if (remainingMarkers.length === 0) {
       console.log("last marker");
 
       return (
@@ -229,7 +230,7 @@ class Home extends React.Component {
               {this._createTUCMarker(this.state.TUCMarkers)}
             </MapView>
           </View>
-          <View style={{ paddingBottom: 100 }}></View>
+          <View style={{ paddingBottom: 100 }}/>
         </View>
       </ScrollView>
     );
@@ -329,14 +330,14 @@ class Home extends React.Component {
               />
             </MapView>
           </View>
-          <View style={{ paddingBottom: 100 }}></View>
+          <View style={{paddingBottom: 100}}/>
         </View>
       </ScrollView>
     );
   }
 
   _displayWEI() {
-    if (Object.keys(this.state.weiInfos).length != 0) {
+    if (Object.keys(this.state.weiInfos).length !== 0) {
       return (
         <ScrollView style={styles.zoomed} showsVerticalScrollIndicator={false}>
           <View style={styles.zoomedEvent}>
@@ -533,16 +534,16 @@ class Home extends React.Component {
 
                 <Text style={styles.about}> Carte des Animations </Text>
                 <Image
-                  style={{
-                    marginTop: 20,
-                    width: Dimensions.get("window").width * 0.9,
-                    height: Dimensions.get("window").width * 0.9,
-                  }}
-                  source={{ uri: this.state.weiInfos.animationsmap }}
-                ></Image>
+    style={{
+      marginTop: 20,
+      width: Dimensions.get("window").width * 0.9,
+      height: Dimensions.get("window").width * 0.9,
+    }}
+    source={{uri: this.state.weiInfos.animationsmap}}
+    />
               </View>
             </View>
-            <View style={{ paddingBottom: 100 }}></View>
+            <View style={{paddingBottom: 100}}/>
           </View>
         </ScrollView>
       );
@@ -551,14 +552,14 @@ class Home extends React.Component {
 
   _getEventById(id) {
     this.state.events.forEach((event) => {
-      if (event.id == id) {
+      if (event.id === id) {
         return event;
       }
     });
   }
 
   _displayInfos() {
-    if (this.state.zoom != -1) {
+    if (this.state.zoom !== -1) {
       const event = this.state.events[this.state.zoom];
       if (event.id in this.specialZooms) {
         return this.specialZooms[event.id]();
@@ -641,7 +642,7 @@ class Home extends React.Component {
                   />
                 </MapView>
               </View>
-              <View style={{ paddingBottom: 100 }}></View>
+              <View style={{paddingBottom: 100}}/>
             </View>
           </ScrollView>
         );
@@ -947,6 +948,7 @@ const styles = StyleSheet.create({
     width: wp("100%") - 40,
     height: wp("75%") - 40,
     marginTop: hp("2%"),
+    marginBottom: 60 * iphoneX
   },
 });
 

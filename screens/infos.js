@@ -1,7 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Linking, SafeAreaView, Dimensions, Modal, Image} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Linking, SafeAreaView, Dimensions, Modal, Image, ScrollView} from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { IconButton, Colors } from "react-native-paper";
+
+
 
 
 
@@ -12,7 +14,7 @@ class InfosScreen extends React.Component{
     }
 
     _displayDiscord(){
-        if(this.state.discordLink != ""){
+        if(this.state.discordLink !== ""){
             return (
                 <TouchableOpacity onPress={()=>Linking.openURL(this.state.discordLink)}>
                     <Text selectable style={[styles.socialsText, {color: "#00bbe1", textDecorationLine:'underline'}]}>{this.state.discordLink}</Text>
@@ -40,82 +42,102 @@ class InfosScreen extends React.Component{
     render(){
         return(
         <SafeAreaView style={styles.container}>
-            <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.bonPlans}
-            >
-                <View style={styles.modalContainer}>
-                    <IconButton
-                        style={styles.closeButton}
-                        icon="close"
-                        color={Colors.red700}
-                        size={20}
-                        onPress={() => {
-                        this._setModalVisible(!this.state.modalVisible);
-                        }}
-                    />
-                </View>   
-            </Modal>
-            <Text style={styles.headerText}> Informations </Text>
-            <Text style={[styles.subTitle, {marginLeft: 25}]}>Réseaux de l'integ</Text>
-            <View style={styles.socialsContainer}>
-                <View style={styles.socialsRow}>
-                    <View style={styles.social}>
-                        <Ionicons name="logo-facebook" size={32} color="#EA8BDE" />
-                        <Text selectable style={styles.socialsText}>Alain Tégration</Text>
+            <ScrollView>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.bonPlans}
+                >
+                    <View style={styles.modalContainer}>
+                        <IconButton
+                            style={styles.closeButton}
+                            icon="close"
+                            color={Colors.red700}
+                            size={20}
+                            onPress={() => {
+                                this._setModalVisible(!this.state.modalVisible);
+                            }}
+                        />
                     </View>
-                    <View style={styles.social}>
-                        <Ionicons name="logo-snapchat" size={32} color="#EA8BDE" />
-                        <Text selectable style={styles.socialsText}>integ utc</Text>
+                </Modal>
+                <Text style={styles.headerText}> Informations </Text>
+                <Text style={[styles.subTitle, {marginLeft: 25}]}>Réseaux de l'integ</Text>
+                <View style={styles.socialsContainer}>
+                    <View style={styles.socialsRow}>
+                        <View style={styles.social}>
+                            <Ionicons name="logo-facebook" size={32} color="#EA8BDE" />
+                            <Text selectable style={styles.socialsText}>Alain Tégration</Text>
+                        </View>
+                        <View style={styles.social}>
+                            <Ionicons name="logo-snapchat" size={32} color="#EA8BDE" />
+                            <Text selectable style={styles.socialsText}>integ utc</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.socialsRow}>
-                    <View style={styles.social}>
-                        <Ionicons name="logo-instagram" size={32} color="#EA8BDE" />
-                        <Text selectable style={styles.socialsText}>integrationutc</Text>
+                    <View style={styles.socialsRow}>
+                        <View style={styles.social}>
+                            <Ionicons name="logo-instagram" size={32} color="#EA8BDE" />
+                            <Text selectable style={styles.socialsText}>integrationutc</Text>
+                        </View>
+                        <View style={styles.social}>
+                            <Ionicons name="logo-twitter" size={32} color="#EA8BDE" />
+                            <Text selectable style={styles.socialsText}>IntegrationUtc</Text>
+                        </View>
                     </View>
-                    <View style={styles.social}>
-                        <Ionicons name="logo-twitter" size={32} color="#EA8BDE" />
-                        <Text selectable style={styles.socialsText}>IntegrationUtc</Text>
-                    </View>
-                </View>
 
                     <View style={styles.social}>
                         <FontAwesome5 name="discord" size={32} color="#EA8BDE"/>
                         {this._displayDiscord()}
                     </View>
-            </View>
-            <Text style={[styles.subTitle, {marginLeft: 25}]}>Numéros Utiles</Text>
-            <View style={{flexDirection:'row'}}>
-                <View style={styles.numbersLeft}>
-                    
-                    <Text style={styles.numberText}> Prez: </Text>
-                    <Text style={styles.numberText}> Vice-Prez: </Text>
-                    <Text style={styles.numberText}> Resp Sécu: </Text>
-                    <Text style={[styles.numberText, {color:'red', fontWeight:'bold'}]}> BDI: </Text>
-                    {/* <Text style={styles.numberText}> Resp Anim: </Text>
+                </View>
+                <Text style={[styles.subTitle, {marginLeft: 25}]}>Numéros Utiles</Text>
+                <View style={{flexDirection:'row'}}>
+                    <View style={styles.numbersLeft}>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33767152420')}}>
+                            <Text style={[styles.numberText, {color:'red', fontWeight:'bold'}]}> URGENCE: </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33652316922')}}>
+                            <Text style={styles.numberText}> Prez: </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33667545159')}}>
+                            <Text style={styles.numberText}> Vice-Prez: </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33658844992')}}>
+                            <Text style={styles.numberText}> Resp Sécu: </Text>
+                        </TouchableOpacity>
+
+                        {/* <Text style={styles.numberText}> Resp Anim: </Text>
                     <Text style={styles.numberText}> Resp Tuc: </Text> */}
-                </View>
-                <View style={styles.numbersRight}>
-                    <Text selectable style={styles.number}>+33 6 52 31 69 22</Text>
-                    <Text selectable style={styles.number}>+33 6 67 54 51 59</Text>
-                    <Text selectable style={styles.number}>+33 6 58 84 49 92</Text>
-                    <Text selectable style={[styles.number,{color:'red'}]}>+33 7 67 15 24 20</Text>
-                    {/* <Text selectable style={styles.number}>+33 7 83 54 92 72</Text>
-                    <Text selectable style={styles.number}>+33 7 60 53 19 35</Text> */}
-                </View>
-            </View>
-            <Text style={[styles.subTitle, {marginLeft: 25}]}>Bons Plans</Text>
-            <View style={styles.bonplansContainer}>
-                <TouchableOpacity onPress={()=>Linking.openURL("https://lhirsute.business.site/")}>
-                    <View style={styles.bonplans}>
-                        <Image  source={require("../assets/hirsute.png")} style={{ width: "100%", height: "100%",resizeMode: 'cover'}}/>
-                        {/* <Text style={styles.bonplansText}> Bons Plans </Text>
-                        <Ionicons name="pricetags" size={32} color="white"/> */}
                     </View>
-                </TouchableOpacity>
-            </View>
+                    <View style={styles.numbersRight}>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33767152420')}}>
+                            <Text style={[styles.number,{color:'red'}]}>+33 7 67 15 24 20</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33652316922')}}>
+                            <Text selectable style={styles.number}>+33 6 52 31 69 22</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33667545159')}}>
+                            <Text selectable style={styles.number}>+33 6 67 54 51 59</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{Linking.openURL('tel:+33658844992')}}>
+                            <Text selectable style={styles.number}>+33 6 58 84 49 92</Text>
+                        </TouchableOpacity>
+
+                        {/* <Text selectable style={styles.number}>+33 7 83 54 92 72</Text>
+                    <Text selectable style={styles.number}>+33 7 60 53 19 35</Text> */}
+                    </View>
+                </View>
+                <Text style={[styles.subTitle, {marginLeft: 25}]}>Bons Plans</Text>
+                <View style={styles.bonplansContainer}>
+                    <TouchableOpacity onPress={()=>Linking.openURL("https://lhirsute.business.site/")}>
+                        <View style={styles.bonplans}>
+                            <Image  source={require("../assets/hirsute.png")} style={{ width: "100%", height: "100%",resizeMode: 'cover'}}/>
+                            {/* <Text style={styles.bonplansText}> Bons Plans </Text>
+                        <Ionicons name="pricetags" size={32} color="white"/> */}
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+
         </SafeAreaView>
         )
     }

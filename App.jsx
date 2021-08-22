@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Text, View, Platform } from 'react-native';
+import { Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -53,7 +53,8 @@ function InfosStackScreen(){
   );
 }
 
-const tabBarIconGap = Platform.OS == 'ios' ? 0 : -15
+const tabBarIconGap = Dimensions.get('window').height > 810 ? 0 : -7;
+const tabBarHeight = Dimensions.get('window').height > 810 ? 80 : 60;
 
 const Tab = createBottomTabNavigator();
 
@@ -71,11 +72,11 @@ export default function App() {
                 iconName = focused ? 'ios-calendar' : 'ios-calendar-outline';
               } else if (route.name === 'Upload') {
                 iconName = focused ? 'cloud-upload' : 'cloud-upload-outline';
-              } else if (route.name == "Verif") {
+              } else if (route.name === "Verif") {
                 iconName = focused ? "checkmark-circle" : "checkmark-circle-outline";
-              } else if (route.name == "Points"){
+              } else if (route.name === "Points"){
                 iconName = focused ? "podium": "podium-outline";
-              } else if (route.name == 'Infos'){
+              } else if (route.name === 'Infos'){
                 iconName = focused ? "information-circle": "information-circle-outline";
               }
 
@@ -86,7 +87,7 @@ export default function App() {
             activeTintColor: '#EA8BDE',
             inactiveTintColor: 'white',
             style: {
-              height: 80,
+              height: tabBarHeight,
               backgroundColor:"#2C2C2C"
             },
             labelStyle:{

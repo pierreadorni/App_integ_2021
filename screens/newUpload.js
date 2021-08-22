@@ -1,19 +1,19 @@
 import React from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  TouchableHighlight,
-  Button,
-  Modal,
   ActivityIndicator,
-  FlatList,
   DeviceEventEmitter,
+  Dimensions,
+  FlatList,
+  Image,
+  Modal,
+  Platform,
   SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
-import { IconButton, Colors } from "react-native-paper";
+import {Colors, IconButton} from "react-native-paper";
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import Defi from "../components/defi.js";
@@ -26,15 +26,11 @@ import NumberTextInput from "rn-weblineindia-number-input";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 import uuidv4 from "uuid/v4";
-import { SearchBar } from "react-native-elements";
+import {SearchBar} from "react-native-elements";
 
-const options = {
-  title: "Select Avatar",
-  storageOptions: {
-    skipBackup: true,
-    path: "images",
-  },
-};
+const iphoneX = Platform.OS === 'ios' && Dimensions.get('window').height > 810;
+const iphone = Platform.OS === 'ios';
+const iphone8 = Platform.OS === 'ios' && Dimensions.get('window').height < 810;
 
 class newUpload extends React.Component {
   constructor(props) {
@@ -79,14 +75,14 @@ class newUpload extends React.Component {
     let defisStr = await this._readDefis();
     let defis = JSON.parse(defisStr);
 
-    if (typeof defis != "object") {
+    if (typeof defis !== "object") {
       defis = [];
     }
 
     let found = 0;
 
     for (let i = 0; i < defis.length; i++) {
-      if (defis[i].id == defi.id || defis[i].id == defi.localId) {
+      if (defis[i].id === defi.id || defis[i].id === defi.localId) {
         found = 1;
         defis[i] = defi;
       }
@@ -106,13 +102,12 @@ class newUpload extends React.Component {
     let res = await FileSystem.getInfoAsync(
       FileSystem.documentDirectory + "defis_envoyes.json"
     );
-    if (res["exists"] == false) {
+    if (res["exists"] === false) {
       return 0;
     }
-    let content = await FileSystem.readAsStringAsync(
-      FileSystem.documentDirectory + "defis_envoyes.json"
+    return await FileSystem.readAsStringAsync(
+        FileSystem.documentDirectory + "defis_envoyes.json"
     );
-    return content;
   }
 
   _sendImage() {
@@ -162,7 +157,7 @@ class newUpload extends React.Component {
   }
 
   _sendChunk(uri, index, nbParts, uploadID, chunkSize, totalSize) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const xhr = new XMLHttpRequest();
       const formData = new FormData();
 
@@ -191,7 +186,7 @@ class newUpload extends React.Component {
       });
 
       xhr.addEventListener("load", () => {
-        if (index == nbParts - 1) {
+        if (index === nbParts - 1) {
           let defi = JSON.parse(JSON.stringify(this.state.defi));
           defi.status = 1;
           defi.localId = defi.id;
@@ -265,7 +260,7 @@ class newUpload extends React.Component {
 
         const fr = new FileReader();
         for (let i = 0; i < nParts; i++) {
-          await new Promise((resolve, reject) => {
+          await new Promise((resolve) => {
             fr.onload = async () => {
               const fileUri = `${FileSystem.cacheDirectory}/${uploadID}/${i}.${ext}`;
               console.log(`writing to ${fileUri}...`);
@@ -382,7 +377,7 @@ class newUpload extends React.Component {
   }
 
   _submit() {
-    if (this.state.defiChoisi != undefined && this.state.image != undefined) {
+    if (this.state.defiChoisi !== undefined && this.state.image !== undefined) {
       this.setState(
         {
           loading: true,
@@ -442,13 +437,13 @@ class newUpload extends React.Component {
   }
 
   _displayDebug() {
-    if (this.state.defiChoisi != undefined) {
+    if (this.state.defiChoisi !== undefined) {
       return this.state.defiChoisi.id;
     }
   }
 
   _displayDefiButton() {
-    if (this.state.defiChoisi == undefined) {
+    if (this.state.defiChoisi === undefined) {
       return "Choisir un défi";
     } else {
       return this.state.defiChoisi.description;
@@ -472,10 +467,10 @@ class newUpload extends React.Component {
         <Image
           source={{ uri: this.state.thumbnail }}
           style={{ width: "100%", height: "100%" }}
-        ></Image>
+        />
       );
     } else {
-      return <Ionicons name={"camera"} size={50}></Ionicons>;
+      return <Ionicons name={"camera"} size={50}/>;
     }
   }
   updateSearch = (search) => {
@@ -577,14 +572,14 @@ class newUpload extends React.Component {
         </Modal>
 
         {/* croix pour fermer */}
-        <View style={{ position: "absolute", left: 10, top: 10 }}>
+        <View style={{ position: "absolute", left: 10, top: 10+15*iphoneX }}>
           <TouchableOpacity onPress={this.props.navigation.goBack}>
-            <Ionicons name={"close"} size={50} color={"#ffffff"}></Ionicons>
+            <Ionicons name={"close"} size={50} color={"#ffffff"}/>
           </TouchableOpacity>
         </View>
 
         {/* BOUTON DE CHOIX DE DEFI*/}
-        <View style={{ position: "absolute", left: 10, top: 80 }}>
+        <View style={{ position: "absolute", left: 10, top: 80+15*iphoneX }}>
           <TouchableOpacity
             onPress={() => {
               this._setModalVisible(true);
@@ -606,7 +601,7 @@ class newUpload extends React.Component {
               backgroundColor: "#D8D8D8",
               height: 200,
               width: 130,
-              marginTop: 30,
+              marginTop: 30+iphone*80,
               marginBottom: 30,
               alignItems: "center",
               justifyContent: "center",
@@ -634,14 +629,14 @@ class newUpload extends React.Component {
           Participants{" "}
         </Text>
         <NumberTextInput
-          type="decimal"
-          decimalPlaces={0}
-          value={this.state.number}
-          onUpdate={(value) => this.setState({ number: value })}
-          style={styles.textInputStyle}
-          returnKeyType={"done"}
-          allowNegative={false}
-        ></NumberTextInput>
+    type="decimal"
+    decimalPlaces={0}
+    value={this.state.number}
+    onUpdate={(value) => this.setState({number: value})}
+    style={styles.textInputStyle}
+    returnKeyType={"done"}
+    allowNegative={false}
+    />
 
         {/* CHOIX DU CLAN */}
         <Text
@@ -657,20 +652,20 @@ class newUpload extends React.Component {
           Clan{" "}
         </Text>
         <ChoixClan
-          selected={this.state.clan}
-          kb={() => {
-            this._setClan("kb");
-          }}
-          vb={() => {
-            this._setClan("vb");
-          }}
-          tampi={() => {
-            this._setClan("tampi");
-          }}
-          youa={() => {
-            this._setClan("youa");
-          }}
-        ></ChoixClan>
+    selected={this.state.clan}
+    kb={() => {
+      this._setClan("kb");
+    }}
+    vb={() => {
+      this._setClan("vb");
+    }}
+    tampi={() => {
+      this._setClan("tampi");
+    }}
+    youa={() => {
+      this._setClan("youa");
+    }}
+    />
 
         {/* AFFICHAGE DEBUG */}
 
@@ -717,7 +712,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    bottom: 50,
+    bottom: 50-30*iphone8,
     right: 50,
     flexDirection: "row",
     backgroundColor: "#EA8BDE",

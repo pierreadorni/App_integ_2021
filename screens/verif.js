@@ -1,11 +1,10 @@
 import React from "react";
-import {Text, StyleSheet, RefreshControl, ScrollView, SafeAreaView} from 'react-native';
+import {AppState, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text} from 'react-native';
 import DefiCard from "../components/defiCard";
 import Swiper from 'react-native-deck-swiper';
 import Toast from 'react-native-root-toast';
 import {sha256} from 'js-sha256';
 import * as FileSystem from 'expo-file-system';
-
 
 
 class Verif extends React.Component {
@@ -16,23 +15,21 @@ class Verif extends React.Component {
             loadedDefis: [],
             refreshing: false,
             swiped: 0,
-            defisListe: []
+            defisListe: [],
+            appState: AppState.currentState
         }
     }
 
     async _getDefiFromServer(){
         let response = await fetch('https://assos.utc.fr/integ/integ2021/api/get_defi_verif.php');
-        let data = await response.json();
-        
-        return data
+        return await response.json()
     }
 
     async _getDeviceId(){
         const path = FileSystem.documentDirectory+'deviceId.json';
         const infos = await FileSystem.getInfoAsync(path);
         if (infos['exists']){
-            const deviceID = JSON.parse(await FileSystem.readAsStringAsync(path));
-            return deviceID;
+            return JSON.parse(await FileSystem.readAsStringAsync(path));
         }else{
             const deviceID = Constants.sessionId;
             await FileSystem.writeAsStringAsync(path,JSON.stringify(deviceID));
@@ -59,7 +56,7 @@ class Verif extends React.Component {
                 <Swiper
                     cards={this.state.defis}
                     renderCard={(defi) => {
-                        if (defi != undefined){
+                        if (defi !== undefined){
 
                             return (
                                 <DefiCard navigation={this.props.navigation} defi={defi} defisListe={this.state.defisListe}/>
@@ -67,7 +64,7 @@ class Verif extends React.Component {
                         }
                     }}
                     onSwiped={
-                        (cardIndex) => {
+                        () => {
                             
                             let loaded = this.state.loadedDefis;
                             loaded.shift();
@@ -148,6 +145,7 @@ class Verif extends React.Component {
 
     componentDidMount() {
 
+        AppState.addEventListener('change', this._handleAppStateChange);
         for (let i=0;i<2;i++){
             this._getDefiFromServer().then((defi)=>{
                 
@@ -175,14 +173,27 @@ class Verif extends React.Component {
     }
 
     componentWillUnmount() {
+        console.log('componentWillUnmount');
+        AppState.removeEventListener('change', this._handleAppStateChange);
         this.state.defis.forEach((defi)=>{
             this._setStatus(defi.id,1);
         })
     }
 
+    _handleAppStateChange = (nextAppState) => {
+        if (this.state.appState === 'active' && nextAppState.match(/inavtive|background/)){
+            this.state.defis.forEach((defi)=>{
+                this._setStatus(defi.id,1);
+            })
+            this.setState({
+                loadedDefis: []
+            })
+        }
+        this.setState({appState: nextAppState});
+    }
+
 
     render(){
-        
         return(
             <SafeAreaView style={styles.container}>
                 <ScrollView 
