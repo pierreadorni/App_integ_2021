@@ -43,6 +43,7 @@ class InfosScreen extends React.Component{
     async getDiscordLink(){
         let socials = await fetch("https://assos.utc.fr/integ/integ2021/fichiers/socials.json");
         socials = await socials.json();
+        console.log(socials);
         return socials.discord
     }
 
@@ -80,21 +81,31 @@ class InfosScreen extends React.Component{
                     <View style={styles.socialsRow}>
                         <View style={styles.social}>
                             <Ionicons name="logo-facebook" size={32} color="#EA8BDE" />
-                            <Text selectable style={styles.socialsText}>Alain Tégration</Text>
+                            <TouchableOpacity onPress={()=>Linking.openURL("fb://profile/100024613896618")}>
+                                <Text selectable style={[styles.socialsText, {color: "#00bbe1", textDecorationLine:'underline'}]}>Alain Tégration</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.social}>
                             <Ionicons name="logo-snapchat" size={32} color="#EA8BDE" />
-                            <Text selectable style={styles.socialsText}>integ utc</Text>
+
+                            <TouchableOpacity onPress={()=>Linking.openURL("snapchat://add/integutc")}>
+                                <Text selectable style={[styles.socialsText, {color: "#00bbe1", textDecorationLine:'underline'}]}>integutc</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     <View style={styles.socialsRow}>
                         <View style={styles.social}>
                             <Ionicons name="logo-instagram" size={32} color="#EA8BDE" />
-                            <Text selectable style={styles.socialsText}>integrationutc</Text>
+                            <TouchableOpacity onPress={()=>Linking.openURL("instagram://user?username=integrationutc")}>
+                                <Text selectable style={[styles.socialsText, {color: "#00bbe1", textDecorationLine:'underline'}]}>integrationutc</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={styles.social}>
                             <Ionicons name="logo-twitter" size={32} color="#EA8BDE" />
-                            <Text selectable style={styles.socialsText}>IntegrationUtc</Text>
+                            <TouchableOpacity onPress={()=>Linking.openURL("twitter://user?screen_name=IntegrationUtc")}>
+                                <Text selectable style={[styles.socialsText, {color: "#00bbe1", textDecorationLine:'underline'}]}>IntegrationUtc</Text>
+                            </TouchableOpacity>
+
                         </View>
                     </View>
 
