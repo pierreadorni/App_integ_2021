@@ -2,7 +2,7 @@
   "expo": {
     "name": "Intégration UTC",
     "slug": "App_integ_2021",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "orientation": "portrait",
     "icon": "./assets/integ_logo.png",
     "userInterfaceStyle":"light",
@@ -36,7 +36,7 @@
     },
     "android": {
       "package":"fr.utc.integration",
-      "versionCode":2,
+      "versionCode":3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/integ_logo.png",
         "backgroundColor": "#ffffff"
