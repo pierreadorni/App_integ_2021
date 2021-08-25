@@ -66,6 +66,9 @@ class PointsScreen extends React.Component{
         this.setState({refreshing:true}, ()=>{
             this._getPoints().then(()=>{
                 this.setState({refreshing:false})
+                this.setState({
+                    ranking: this._getRanking()
+                })
             })
         })
     }
@@ -134,7 +137,7 @@ class PointsScreen extends React.Component{
         return(
             <SafeAreaView style={{backgroundColor: "#121212", flex:1}}>
                 <StatusBar barStyle="light-content" />
-                <ScrollView style={{flex:1}} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}>
+                <ScrollView style={{flex:1}} refreshControl={<RefreshControl tintColor={"white"} refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}>
                     <View style={styles.headerContainer}>
                         <Text style={styles.headerText}> Podium </Text>
                     </View>
