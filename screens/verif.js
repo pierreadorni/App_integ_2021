@@ -179,14 +179,17 @@ class Verif extends React.Component {
     componentWillUnmount() {
         console.log('componentWillUnmount');
         AppState.removeEventListener('change', this._handleAppStateChange);
-        this.state.defis.forEach((defi)=>{
+        this.state.loadedDefis.forEach((defi)=>{
             this._setStatus(defi.id,1);
+        })
+        this.setState({
+            loadedDefis: []
         })
     }
 
     _handleAppStateChange = (nextAppState) => {
         if (this.state.appState === 'active' && nextAppState.match(/inavtive|background/)){
-            this.state.defis.forEach((defi)=>{
+            this.state.loadedDefis.forEach((defi)=>{
                 this._setStatus(defi.id,1);
             })
             this.setState({
