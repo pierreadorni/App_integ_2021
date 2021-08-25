@@ -161,7 +161,7 @@ class Home extends React.Component{
             <Text style={styles.title}>Défis</Text>
             <View>
               <FlatList
-                  refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
+                  refreshControl={<RefreshControl tintColor={"white"} refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
                   style={{width: '100%', height:'73%'}}
                   data={this.state.displayedDefis}
                   keyExtractor={(item) => item.id.toString()}
