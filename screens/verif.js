@@ -129,10 +129,14 @@ class Verif extends React.Component {
             )
         }else{
             return(
-                <SafeAreaView style={{flex:1,alignItems:"center",justifyContent:'center'}}>
+                <ScrollView
+                    refreshControl={<RefreshControl tintColor={"white"} refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
+
+                    contentContainerStyle={styles.body}
+                >
+                    <StatusBar barStyle="light-content" />
                     <Text style={{color:"white"}}> Aucun défi à vérifier </Text>
-                </SafeAreaView>
-                
+                </ScrollView>
             )
         }
     }
@@ -197,12 +201,8 @@ class Verif extends React.Component {
         return(
             <SafeAreaView style={styles.container}>
                 <StatusBar barStyle="light-content" />
-                <ScrollView 
-                refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={()=>{this.onRefresh()}} />}
-                contentContainerStyle={styles.body}
-                >
-                    {this._renderSwiper()}
-                </ScrollView>
+                {this._renderSwiper()}
+
             </SafeAreaView>
 
         );
@@ -211,13 +211,15 @@ class Verif extends React.Component {
 
 const styles = StyleSheet.create({
     container:{
-        flex:1
+        flex:1,
+        backgroundColor:"#121212"
     },
     body:{
         backgroundColor: "#121212",
         flex: 1,
+        alignItems:"center",
+        justifyContent:"center"
     },
-    
     text: {
         textAlign: "center",
         fontSize: 50,
