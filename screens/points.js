@@ -8,7 +8,7 @@ import {
     ActivityIndicator,
     ScrollView,
     RefreshControl,
-    StatusBar
+    StatusBar, Image
 } from 'react-native';
 import PointsBars from '../components/pointsBars';
 
@@ -92,7 +92,11 @@ class PointsScreen extends React.Component{
     _renderPointsBars(){
         if (Object.keys(this.state.points).length > 0){
             return(
-                <PointsBars points={this.state.points} maxHeight={Dimensions.get("window").height*0.4}/>
+                <View>
+
+                    <PointsBars points={this.state.points} maxHeight={Dimensions.get("window").height*0.4}/>
+                </View>
+
             )
         }else{
             return(

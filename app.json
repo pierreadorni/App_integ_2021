@@ -2,9 +2,9 @@
   "expo": {
     "name": "Intégration UTC",
     "slug": "App_integ_2021",
-    "version": "2.0.2",
+    "version": "2.0.4",
     "orientation": "portrait",
-    "icon": "./assets/integ_logo.png",
+    "icon": "./assets/integ_logo_ios.png",
     "userInterfaceStyle":"light",
     "splash": {
       "image": "./assets/splash_integ.png",
@@ -27,7 +27,8 @@
       "supportsTablet": true,
       "userInterfaceStyle": "light",
       "infoPlist": {
-        "UIUserInterfaceStyle": "Light"
+        "UIUserInterfaceStyle": "Light",
+        "NSPhotoLibraryUsageDescription": "Cette application nécessite l'autorisation d'accéder à votre bibliothèque de photos afin de vous permettre d'envoyer la vidéo de votre choix sur nos serveurs"
       },
       "bundleIdentifier":"com.utcintegration.integration2020",
       "config":{
@@ -36,10 +37,10 @@
     },
     "android": {
       "package":"fr.utc.integration",
-      "versionCode":3,
+      "versionCode":5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/integ_logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#fc68b1"
       },
       "icon":"./assets/integ_logo_ios.png",
       "userInterfaceStyle": "light",

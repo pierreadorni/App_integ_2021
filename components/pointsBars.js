@@ -76,6 +76,7 @@ class PointsBars extends React.Component{
     render() {
         return(
             <View style={styles.container}>
+
                 <View style={{alignItems:'center'}}>
                     <Image source={require("../assets/kb1.png")} style={{height:50,width:50}}></Image>
                     <Text style={{color:this.colors['kb'], textAlign:'center', marginBottom: 20, fontSize:16, fontWeight:'bold'}}>{this.props.points['kb']}</Text>
@@ -126,13 +127,14 @@ const styles = StyleSheet.create({
     container:{
         width: '100%',
         flex:1,
-        backgroundColor:'#121212',
+        // backgroundColor:'#121212',
         alignItems:'flex-end',
         justifyContent:'space-between',
         flexDirection:'row',
         paddingBottom:50,
         paddingHorizontal: "10%",
-        height: Dimensions.get("window").height*0.6
+        height: Dimensions.get("window").height*0.6,
+        overflow:'visible',
     },
     bar:{
         width:20,
