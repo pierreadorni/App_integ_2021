@@ -32,7 +32,7 @@
       },
       "bundleIdentifier":"com.utcintegration.integration2020",
       "config":{
-        "googleMapsApiKey":"AIzaSyA14bGsS6VDXB63_0XJX1SG2lJyb9OsNZw"
+        "googleMapsApiKey":"IOS-MAPS-API-KEY"
       }
     },
     "android": {
@@ -46,7 +46,7 @@
       "userInterfaceStyle": "light",
       "config":{
         "googleMaps":{
-          "apiKey":"AIzaSyCu-R7_2FWTKO7O4s_EMojRpbfm-0dXK8E"
+          "apiKey":"ANDROID-MAPS-API-KEY"
         }
       }
     },
